@@ -1,15 +1,29 @@
 const crypto = require('crypto');
 const zlib = require('zlib');
 
+/*
+* Security Observations
+*
+* GZip encoding is only used when this actually shortens the output. The IV is overloaded to store
+* one byte indicating this. Hence the IV only truly uses bits - 1 of its length.
+*
+* This seems acceptable when the iv is 16 bytes long, since hash collision probabilities are similar.
+* */
+
 module.exports = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
   const secretHash = crypto.createHash('sha256').update(secret, 'utf-8').digest();
 
   return {
     encrypt: (input) => {
+      const inputGzip = zlib.gzipSync(input, { level: 9 });
+      const useGzip = input.length > inputGzip.length;
+      const inputShortest = useGzip ? inputGzip : input;
+
       const iv = crypto.randomBytes(ivLength);
+      // eslint-disable-next-line no-bitwise
+      iv[0] = useGzip ? iv[0] | 1 : iv[0] & ~1;
       const cipher = crypto.createCipheriv(encryption, secretHash, iv);
-      const inputZipped = zlib.gzipSync(input, { level: 9 });
-      const rawEncrypted = Buffer.concat([iv, cipher.update(inputZipped), cipher.final()]);
+      const rawEncrypted = Buffer.concat([iv, cipher.update(inputShortest), cipher.final()]);
       return rawEncrypted
         .toString('base64')
         .replace(/\+/g, "-")
@@ -23,8 +37,10 @@ module.exports = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
         .replace(/-/g, "+"), 'base64');
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
-      const outputZipped = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
-      return zlib.gunzipSync(outputZipped);
+      const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
+      // eslint-disable-next-line no-bitwise
+      const useGzip = rawEncrypted[0] & 1;
+      return useGzip ? zlib.gunzipSync(output) : output;
     }
   };
 };
