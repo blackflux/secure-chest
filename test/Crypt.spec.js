@@ -20,6 +20,7 @@ describe("Testing Crypt", () => {
       const data = crypto.randomBytes(i);
       const encrypted = crypt.encrypt(data);
       expect(["0", "1", "2"]).to.contain(encrypted[encrypted.length - 1]);
+      expect(/^[A-Za-z0-9\-_]+$/g.test(encrypted)).to.equal(true);
       const output = crypt.decrypt(encrypted);
       expect(Buffer.compare(data, output)).to.equal(0);
     }
