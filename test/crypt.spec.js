@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const Crypt = require("./../src/Crypt");
+const { Crypt, toBase64, fromBase64 } = require("./../src/crypt");
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
@@ -62,6 +62,28 @@ describe("Testing Crypt", () => {
         expect(Buffer.compare(data, output)).to.not.equal(0);
       } catch (e) {
         expect(e.message).to.contain(":bad decrypt");
+      }
+    }
+  });
+
+  it("Testing Incorrect IV", () => {
+    for (let i = 1; i < 2048; i += 1) {
+      const crypt = Crypt(crypto.randomBytes(256));
+      const data = crypto.randomBytes(i);
+      const encrypted = crypt.encrypt(data);
+      const newIV = crypto.randomBytes(128);
+      const buffer = fromBase64(encrypted);
+      newIV.copy(buffer);
+      const modifiedEncrypted = toBase64(buffer);
+      try {
+        const output = crypt.decrypt(modifiedEncrypted);
+        expect(Buffer.compare(data, output)).to.not.equal(0);
+      } catch (e) {
+        expect([
+          ":bad decrypt",
+          "incorrect header check",
+          "unknown compression method"
+        ].some(needle => e.message.indexOf(needle) !== -1)).to.equal(true);
       }
     }
   });
