@@ -14,6 +14,17 @@ const shuffle = (a) => {
 };
 
 describe("Testing Crypt", () => {
+  it("Testing Custom Base64 Encoding", () => {
+    for (let i = 1; i < 2048; i += 1) {
+      const data = crypto.randomBytes(i);
+      const encoded = toBase64(data);
+      expect(["0", "1", "2"]).to.contain(encoded[encoded.length - 1]);
+      expect(/^[A-Za-z0-9\-_]+$/g.test(encoded)).to.equal(true);
+      const decoded = fromBase64(encoded);
+      expect(Buffer.compare(data, decoded)).to.equal(0);
+    }
+  });
+
   it("Testing Different Length", () => {
     for (let i = 1; i < 1024; i += 1) {
       const crypt = Crypt(crypto.randomBytes(256));
