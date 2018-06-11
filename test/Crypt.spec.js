@@ -50,4 +50,19 @@ describe("Testing Crypt", () => {
       expect(Object.keys(hashSet).length).to.equal(1024);
     }
   });
+
+  it("Testing Incorrect Secret", () => {
+    for (let i = 1; i < 2048; i += 1) {
+      const crypt1 = Crypt(crypto.randomBytes(256));
+      const crypt2 = Crypt(crypto.randomBytes(256));
+      const data = crypto.randomBytes(i);
+      const encrypted = crypt1.encrypt(data);
+      try {
+        const output = crypt2.decrypt(encrypted);
+        expect(Buffer.compare(data, output)).to.not.equal(0);
+      } catch (e) {
+        expect(e.message).to.contain(":bad decrypt");
+      }
+    }
+  });
 });
