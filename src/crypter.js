@@ -27,10 +27,10 @@ module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => 
   const secretHash = crypto.createHash('sha256').update(secret, 'utf-8').digest();
 
   return {
-    encrypt: (input) => {
-      const inputGzip = zlib.gzipSync(input, { level: 9 });
-      const useGzip = input.length > inputGzip.length;
-      const inputShortest = useGzip ? inputGzip : input;
+    encrypt: (bytes) => {
+      const inputGzip = zlib.gzipSync(bytes, { level: 9 });
+      const useGzip = bytes.length > inputGzip.length;
+      const inputShortest = useGzip ? inputGzip : bytes;
 
       const iv = crypto.randomBytes(ivLength);
       // eslint-disable-next-line no-bitwise
@@ -39,8 +39,8 @@ module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => 
       const rawEncrypted = Buffer.concat([iv, cipher.update(inputShortest), cipher.final()]);
       return toUrlSafeBase64(rawEncrypted);
     },
-    decrypt: (input) => {
-      const rawEncrypted = fromUrlSafeBase64(input);
+    decrypt: (base64) => {
+      const rawEncrypted = fromUrlSafeBase64(base64);
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
       const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
