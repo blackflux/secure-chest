@@ -28,7 +28,7 @@ module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => 
 
   return {
     encrypt: (bytes) => {
-      const inputGzip = zlib.gzipSync(bytes, { level: 9 });
+      const inputGzip = zlib.gzipSync(bytes, { level: zlib.constants.Z_BEST_COMPRESSION });
       const useGzip = bytes.length > inputGzip.length;
       const inputShortest = useGzip ? inputGzip : bytes;
 
