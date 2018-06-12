@@ -20,7 +20,7 @@ const fromUrlSafeBase64 = input => Buffer.from(input
 module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
 module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
-  const secretHash = crypto.createHash('sha256').update(secret, 'utf-8').digest();
+  const secretHash = crypto.createHash('sha256').update(secret).digest();
 
   return {
     encrypt: (bytes) => {
