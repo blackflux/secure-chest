@@ -23,7 +23,7 @@ const fromUrlSafeBase64 = input => Buffer.from(input
   .replace(/-/g, "+"), 'base64');
 module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
-module.exports.Crypt = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
+module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
   const secretHash = crypto.createHash('sha256').update(secret, 'utf-8').digest();
 
   return {
