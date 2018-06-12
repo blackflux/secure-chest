@@ -43,7 +43,7 @@ describe("Testing Crypter", () => {
     for (let i = 1; i < 1024; i += 1) {
       const crypter = Crypter(crypto.randomBytes(256));
       const randomText = shuffle(words).slice(0, Math.floor(Math.random() * words.length)).join(" ");
-      const data = Buffer.from(randomText);
+      const data = Buffer.from(randomText, "utf8");
       const encrypted = crypter.encrypt(data);
       const output = crypter.decrypt(encrypted);
       expect(Buffer.compare(data, output)).to.equal(0);
