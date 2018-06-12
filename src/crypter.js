@@ -2,12 +2,8 @@ const crypto = require('crypto');
 const zlib = require('zlib');
 
 /*
-* Security Observations
-*
-* GZip encoding is only used when this actually shortens the output. The IV is overloaded to store
-* one byte indicating this. Hence the IV only truly uses bits - 1 of its length.
-*
-* This seems acceptable when the iv is 16 bytes long, since hash collision probabilities are similar.
+* Security Observations: GZip only used when this shortens output. One bit in IV indicates
+* this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
 * */
 
 const toUrlSafeBase64 = input => input
