@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const { Crypt, toBase64, fromBase64 } = require("./../src/crypt");
+const { Crypt, toUrlSafeBase64, fromUrlSafeBase64 } = require("./../src/crypt");
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
@@ -17,10 +17,10 @@ describe("Testing Crypt", () => {
   it("Testing Custom Base64 Encoding", () => {
     for (let i = 1; i < 2048; i += 1) {
       const data = crypto.randomBytes(i);
-      const encoded = toBase64(data);
+      const encoded = toUrlSafeBase64(data);
       expect(["0", "1", "2"]).to.contain(encoded[encoded.length - 1]);
       expect(/^[A-Za-z0-9\-_]+$/g.test(encoded)).to.equal(true);
-      const decoded = fromBase64(encoded);
+      const decoded = fromUrlSafeBase64(encoded);
       expect(Buffer.compare(data, decoded)).to.equal(0);
     }
   });
@@ -83,9 +83,9 @@ describe("Testing Crypt", () => {
       const data = crypto.randomBytes(i);
       const encrypted = crypt.encrypt(data);
       const newIV = crypto.randomBytes(128);
-      const buffer = fromBase64(encrypted);
+      const buffer = fromUrlSafeBase64(encrypted);
       newIV.copy(buffer);
-      const modifiedEncrypted = toBase64(buffer);
+      const modifiedEncrypted = toUrlSafeBase64(buffer);
       try {
         const output = crypt.decrypt(modifiedEncrypted);
         expect(Buffer.compare(data, output)).to.not.equal(0);

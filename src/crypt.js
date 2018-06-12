@@ -10,18 +10,18 @@ const zlib = require('zlib');
 * This seems acceptable when the iv is 16 bytes long, since hash collision probabilities are similar.
 * */
 
-const toBase64 = input => input
+const toUrlSafeBase64 = input => input
   .toString('base64')
   .replace(/\+/g, "-")
   .replace(/\//g, "_")
   .replace(/=*$/, m => m.length);
-module.exports.toBase64 = toBase64;
+module.exports.toUrlSafeBase64 = toUrlSafeBase64;
 
-const fromBase64 = input => Buffer.from(input
+const fromUrlSafeBase64 = input => Buffer.from(input
   .replace(/[012]$/, m => '='.repeat(parseInt(m, 10)))
   .replace(/_/g, "/")
   .replace(/-/g, "+"), 'base64');
-module.exports.fromBase64 = fromBase64;
+module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
 module.exports.Crypt = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
   const secretHash = crypto.createHash('sha256').update(secret, 'utf-8').digest();
@@ -37,10 +37,10 @@ module.exports.Crypt = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
       iv[0] = useGzip ? iv[0] | 1 : iv[0] & ~1;
       const cipher = crypto.createCipheriv(encryption, secretHash, iv);
       const rawEncrypted = Buffer.concat([iv, cipher.update(inputShortest), cipher.final()]);
-      return toBase64(rawEncrypted);
+      return toUrlSafeBase64(rawEncrypted);
     },
     decrypt: (input) => {
-      const rawEncrypted = fromBase64(input);
+      const rawEncrypted = fromUrlSafeBase64(input);
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
       const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
