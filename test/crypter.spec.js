@@ -14,8 +14,16 @@ const shuffle = (a) => {
 };
 
 describe("Testing Crypter", () => {
-  it("Testing String Secret (Error)", () => {
+  it("Testing Non Buffer Secret (Error)", () => {
     expect(() => Crypter("")).to.throw(TypeError);
+  });
+
+  it("Testing Non Buffer Encrypt Input (Error)", () => {
+    expect(() => Crypter(crypto.randomBytes(128)).encrypt("")).to.throw(TypeError);
+  });
+
+  it("Testing Non String Decrypt Input (Error)", () => {
+    expect(() => Crypter(crypto.randomBytes(128)).decrypt(crypto.randomBytes(0))).to.throw(TypeError);
   });
 
   it("Testing Custom Base64 Encoding", () => {

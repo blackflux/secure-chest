@@ -22,7 +22,7 @@ module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 * */
 
 module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } = {}) => {
-  if (!(secret instanceof Buffer)) {
+  if (!Buffer.isBuffer(secret)) {
     throw new TypeError();
   }
 
@@ -30,6 +30,10 @@ module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } 
 
   return {
     encrypt: (bytes) => {
+      if (!Buffer.isBuffer(bytes)) {
+        throw new TypeError();
+      }
+
       const inputGzip = zlib.gzipSync(bytes, { level: zlib.constants.Z_BEST_COMPRESSION });
       const useGzip = bytes.length > inputGzip.length;
       const inputShortest = useGzip ? inputGzip : bytes;
@@ -42,6 +46,10 @@ module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } 
       return toUrlSafeBase64(rawEncrypted);
     },
     decrypt: (base64) => {
+      if (typeof base64 !== 'string') {
+        throw new TypeError();
+      }
+
       const rawEncrypted = fromUrlSafeBase64(base64);
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
