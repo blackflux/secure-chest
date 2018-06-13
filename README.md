@@ -12,5 +12,7 @@
 
 Sign and Encrypt Data
 
+Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. 
+
 ## Getting Started
 
