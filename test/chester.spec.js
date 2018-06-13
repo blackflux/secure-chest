@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const expect = require('chai').expect;
 const {
   Chester,
-  ParameterError,
   DecryptionIntegrityError,
   DecryptionSignatureError,
   DecryptionTimeTravelError,
