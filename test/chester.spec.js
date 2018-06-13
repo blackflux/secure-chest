@@ -36,11 +36,13 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Signature Error", () => {
-    const chester1 = Chester(Buffer.from([0x8b]));
-    const chester2 = Chester(Buffer.from([0xd2]));
-    const data = Buffer.from([0x7b]).toString("utf8");
-    const chest = chester1.lock(data);
-    expect(() => chester2.unlock(chest)).to.throw(DecryptionSignatureError);
+    const chester = Chester(crypto.randomBytes(256));
+    const data = crypto.randomBytes(256).toString("utf8");
+    const chest = chester.lock(data);
+    const decrypted = chester._crypter.decrypt(chest);
+    Buffer.alloc(16).copy(decrypted);
+    const encrypted = chester._crypter.encrypt(decrypted);
+    expect(() => chester.unlock(encrypted)).to.throw(DecryptionSignatureError);
   });
 
   it("Testing Time Travel Error", () => {

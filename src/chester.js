@@ -24,9 +24,13 @@ module.exports.Chester = (secret, {
   zeroTime = 1514764800,
   maxAgeInSec = 60
 } = {}) => {
-  const crypter = Crypter((secret instanceof Buffer ? secret.toString(encoding) : secret) + name);
+  const crypter = Crypter(Buffer.concat([
+    typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
+    Buffer.from(name, encoding)
+  ]));
 
   return {
+    _crypter: crypter,
     lock: (treasure) => {
       const timestamp = getZerodUnixTime(zeroTime);
       const timestampBuffer = Buffer.alloc(4);

@@ -1,10 +1,6 @@
 const crypto = require('crypto');
 const zlib = require('zlib');
 
-/*
-* Security Observations: GZip only used when this shortens output. One bit in IV indicates
-* this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
-* */
 
 const toUrlSafeBase64 = input => input
   .toString('base64')
@@ -19,7 +15,17 @@ const fromUrlSafeBase64 = input => Buffer.from(input
   .replace(/-/g, "+"), 'base64');
 module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
+
+/*
+* Security Observations: GZip only used when this shortens output. One bit in IV indicates
+* this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
+* */
+
 module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } = {}) => {
+  if (!(secret instanceof Buffer)) {
+    throw new TypeError();
+  }
+
   const secretHash = crypto.createHash('sha256').update(secret).digest();
 
   return {
