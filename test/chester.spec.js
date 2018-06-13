@@ -24,7 +24,7 @@ describe("Testing Chester", () => {
     const chester2 = Chester(Buffer.from([0x01]));
     const data = Buffer.from([0x00]).toString("utf8");
     const chest = chester1.lock(data);
-    expect(() => chester2.unlock(chest, data)).to.throw(DecryptionIntegrityError);
+    expect(() => chester2.unlock(chest)).to.throw(DecryptionIntegrityError);
   });
 
   it("Testing Signature Error", () => {
@@ -32,6 +32,6 @@ describe("Testing Chester", () => {
     const chester2 = Chester(Buffer.from([0xd2]));
     const data = Buffer.from([0x7b]).toString("utf8");
     const chest = chester1.lock(data);
-    expect(() => chester2.unlock(chest, data)).to.throw(DecryptionSignatureError);
+    expect(() => chester2.unlock(chest)).to.throw(DecryptionSignatureError);
   });
 });
