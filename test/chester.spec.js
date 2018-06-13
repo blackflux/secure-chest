@@ -34,4 +34,22 @@ describe("Testing Chester", () => {
     const chest = chester1.lock(data);
     expect(() => chester2.unlock(chest)).to.throw(DecryptionSignatureError);
   });
+
+  it("Testing Time Travel Error", () => {
+    const secret = crypto.randomBytes(256);
+    const chester1 = Chester(secret, { zeroTime: 0 });
+    const chester2 = Chester(secret);
+    const data = crypto.randomBytes(256).toString("utf8");
+    const chest = chester1.lock(data);
+    expect(() => chester2.unlock(chest)).to.throw(DecryptionTimeTravelError);
+  });
+
+  it("Testing Expired Error", () => {
+    const secret = crypto.randomBytes(256);
+    const chester1 = Chester(secret);
+    const chester2 = Chester(secret, { zeroTime: 0 });
+    const data = crypto.randomBytes(256).toString("utf8");
+    const chest = chester1.lock(data);
+    expect(() => chester2.unlock(chest)).to.throw(DecryptionExpiredError);
+  });
 });
