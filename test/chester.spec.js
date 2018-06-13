@@ -19,6 +19,14 @@ describe("Testing Chester", () => {
     }
   });
 
+  it("Testing String Secret", () => {
+    const chester = Chester(crypto.randomBytes(256).toString());
+    const data = crypto.randomBytes(256).toString("utf8");
+    const chest = chester.lock(data);
+    const output = chester.unlock(chest);
+    expect(data).to.equal(output);
+  });
+
   it("Testing Integrity Error", () => {
     const chester1 = Chester(Buffer.from([0x00]));
     const chester2 = Chester(Buffer.from([0x01]));
