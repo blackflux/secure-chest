@@ -37,11 +37,13 @@ describe("Testing Chester", () => {
 
   it("Testing Signature Error", () => {
     const chester = Chester(crypto.randomBytes(256));
+    // eslint-disable-next-line no-underscore-dangle
+    const crypter = chester._crypter;
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester.lock(data);
-    const decrypted = chester._crypter.decrypt(chest);
+    const decrypted = crypter.decrypt(chest);
     Buffer.alloc(16).copy(decrypted);
-    const encrypted = chester._crypter.encrypt(decrypted);
+    const encrypted = crypter.encrypt(decrypted);
     expect(() => chester.unlock(encrypted)).to.throw(DecryptionSignatureError);
   });
 

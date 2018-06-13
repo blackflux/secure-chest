@@ -14,6 +14,10 @@ const shuffle = (a) => {
 };
 
 describe("Testing Crypter", () => {
+  it("Testing String Secret (Error)", () => {
+    expect(() => Crypter("")).to.throw(TypeError);
+  });
+
   it("Testing Custom Base64 Encoding", () => {
     for (let i = 1; i < 2048; i += 1) {
       const data = crypto.randomBytes(i);
