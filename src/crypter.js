@@ -29,14 +29,14 @@ module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } 
   const secretHash = crypto.createHash('sha256').update(secret).digest();
 
   return {
-    encrypt: (bytes) => {
-      if (!Buffer.isBuffer(bytes)) {
+    encrypt: (buffer) => {
+      if (!Buffer.isBuffer(buffer)) {
         throw new TypeError();
       }
 
-      const inputGzip = zlib.gzipSync(bytes, { level: zlib.constants.Z_BEST_COMPRESSION });
-      const useGzip = bytes.length > inputGzip.length;
-      const inputShortest = useGzip ? inputGzip : bytes;
+      const inputGzip = zlib.gzipSync(buffer, { level: zlib.constants.Z_BEST_COMPRESSION });
+      const useGzip = buffer.length > inputGzip.length;
+      const inputShortest = useGzip ? inputGzip : buffer;
 
       const iv = crypto.randomBytes(ivLength);
       // eslint-disable-next-line no-bitwise
