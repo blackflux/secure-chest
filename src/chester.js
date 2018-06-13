@@ -24,6 +24,10 @@ module.exports.Chester = (secret, {
   zeroTime = 1514764800,
   maxAgeInSec = 60
 } = {}) => {
+  if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
+    throw new TypeError();
+  }
+
   const crypter = Crypter(Buffer.concat([
     typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
@@ -32,6 +36,10 @@ module.exports.Chester = (secret, {
   return {
     _crypter: crypter,
     lock: (treasure) => {
+      if (typeof treasure !== 'string') {
+        throw new TypeError();
+      }
+
       const timestamp = getZerodUnixTime(zeroTime);
       const timestampBuffer = Buffer.alloc(4);
       timestampBuffer.writeUInt32BE(timestamp);
@@ -42,6 +50,10 @@ module.exports.Chester = (secret, {
       return crypter.encrypt(bytes);
     },
     unlock: (chest) => {
+      if (typeof chest !== 'string') {
+        throw new TypeError();
+      }
+
       let bytes;
       try {
         bytes = crypter.decrypt(chest);

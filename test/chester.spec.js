@@ -9,6 +9,18 @@ const {
 } = require("./../src/chester");
 
 describe("Testing Chester", () => {
+  it("Testing Non Buffer and non String Secret (Error)", () => {
+    expect(() => Chester(0)).to.throw(TypeError);
+  });
+
+  it("Testing Non String Lock Input (Error)", () => {
+    expect(() => Chester("").lock(1)).to.throw(TypeError);
+  });
+
+  it("Testing Non String Unlock Input (Error)", () => {
+    expect(() => Chester("").unlock(1)).to.throw(TypeError);
+  });
+
   it("Testing Different Length", () => {
     for (let i = 1; i < 1024; i += 1) {
       const chester = Chester(crypto.randomBytes(256));
