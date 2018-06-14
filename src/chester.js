@@ -32,7 +32,7 @@ module.exports.Chester = (secret: string | Buffer, {
   encoding = constants.ENCODING.utf8,
   zeroTime = 1514764800,
   maxAgeInSec = 60,
-  gzip = constants.GZIP_MODE.auto,
+  gzip = constants.GZIP_MODE.AUTO,
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: {

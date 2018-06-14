@@ -17,7 +17,7 @@ const fromUrlSafeBase64 = (input: string) => Buffer.from(input
 module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
 module.exports.Crypter = (secret: Buffer, {
-  gzip = constants.GZIP_MODE.auto,
+  gzip = constants.GZIP_MODE.AUTO,
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: {
@@ -45,9 +45,9 @@ module.exports.Crypter = (secret: Buffer, {
 
       let input = buffer;
       let useGzip = false;
-      if (gzip !== constants.GZIP_MODE.never) {
+      if (gzip !== constants.GZIP_MODE.NEVER) {
         const inputGzip = zlib.gzipSync(buffer, { level: 9 /* zlib.constants.Z_BEST_COMPRESSION */ });
-        if (gzip === constants.GZIP_MODE.force || buffer.length > inputGzip.length) {
+        if (gzip === constants.GZIP_MODE.FORCE || buffer.length > inputGzip.length) {
           input = inputGzip;
           useGzip = true;
         }

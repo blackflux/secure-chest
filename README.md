@@ -117,8 +117,8 @@ Internally name is merged with provided secret and passed into underlying Crypte
 
 #### encoding
 
-Type: `string`<br>
-Default: `utf8`
+Type: `constants.ENCODING`<br>
+Default: `constants.ENCODING.utf8`
 
 Encoding used to convert between strings and Buffers. For most cases `utf8` is suitable.
 
@@ -139,6 +139,10 @@ Default: `60`
 Maximum age in seconds before chest expires and `DecryptionExpiredError` is thrown when trying to unlock it. 
 
 When value is changed it is automatically changed for all previously created chests, since chests only store a timestamp.
+
+#### gzip
+
+See Crypter below
 
 #### encryption
 
@@ -257,6 +261,15 @@ Type: `Buffer`<br>
 
 Secret used to encrypt data. Internally this gets hashed.
 
+#### gzip
+
+Type: `constant.GZIP_MODE`<br>
+Default: `constant.GZIP_MODE.AUTO`
+
+Overwrite gzip mode. By default gzip mode is only used when output is shortened. Useful when gzip is computationally too expensive.
+
+Will not change how first bit is set in IV and hence ok to change for existing tokens.
+
 #### encryption
 
 Type: `string`<br>
@@ -287,6 +300,20 @@ const decrypted = crypter.decrypt(encrypted);
 Buffer.compare(data, decrypted);
 // => 0
 ```
+
+## Constants
+
+### GZIP_MODE
+
+Values `AUTO`, `NEVER`, `FORCE`
+
+Defines gzip mode used internally.
+
+### ENCODING
+
+Values `utf8`, `ascii`, `latin1`, `binary`
+
+Defines encoding for string to buffer conversions.
 
 ## Utility Functions
 

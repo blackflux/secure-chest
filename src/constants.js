@@ -1,8 +1,8 @@
 // @flow
 const GZIP_MODE = Object.freeze({
-  auto: 'auto',
-  force: 'force',
-  never: 'never'
+  AUTO: 'AUTO',
+  FORCE: 'FORCE',
+  NEVER: 'NEVER'
 });
 module.exports.GZIP_MODE = GZIP_MODE;
 
