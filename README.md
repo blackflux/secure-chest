@@ -212,4 +212,4 @@ Input values are heavily checked and a `TypeError` is raised if they are not as 
 
 ## Security Observations
 
-GZip is only used when this shortens the output. One bit in IV indicates this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
+GZip is only used when this shortens the output. One bit in IV indicates this and hence only `len - 1` bits are truly random. Acceptable when `len(IV) >= 16` bytes.
