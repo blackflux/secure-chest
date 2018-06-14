@@ -27,9 +27,9 @@ Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$
 
 Below is an example flow that allows users to be signed in without persisting any information on the server.
 
-<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-console -->
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
 ```js
-const { Chester } = require("secure-chest");
+const { Chester, DecryptionExpiredError } = require("secure-chest");
 
 const chester = Chester("SECRET-ENCRYPTION-KEY");
 
