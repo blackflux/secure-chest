@@ -22,7 +22,7 @@ module.exports.Crypter = (secret: Buffer, {
   gzip = constants.GZIP_MODE.AUTO,
   encryption = 'aes-256-cbc',
   ivLength = 16
-}: {
+}: { // I would move this above to a type alias just to unclutter reading...
   gzip?: $Keys<typeof constants.GZIP_MODE>,
   encryption?: string,
   ivLength?: number
