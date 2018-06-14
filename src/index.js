@@ -1,3 +1,4 @@
+// @flow
 module.exports.Crypter = require("./crypter").Crypter;
 module.exports.toUrlSafeBase64 = require("./crypter").toUrlSafeBase64;
 module.exports.fromUrlSafeBase64 = require("./crypter").fromUrlSafeBase64;

@@ -1,3 +1,4 @@
+// @flow
 const crypto = require('crypto');
 const expect = require('chai').expect;
 const {
@@ -10,22 +11,27 @@ const {
 
 describe("Testing Chester", () => {
   it("Testing Non Buffer and non String Secret (Error)", () => {
+    // $FlowFixMe
     expect(() => Chester(0)).to.throw(TypeError);
   });
 
   it("Testing Non String Lock Input (Error)", () => {
+    // $FlowFixMe
     expect(() => Chester("").lock(1)).to.throw(TypeError);
   });
 
   it("Testing Non String Lock Context (Error)", () => {
+    // $FlowFixMe
     expect(() => Chester("").lock("", 1)).to.throw(TypeError);
   });
 
   it("Testing Non String Unlock Input (Error)", () => {
+    // $FlowFixMe
     expect(() => Chester("").unlock(1)).to.throw(TypeError);
   });
 
   it("Testing Non String Unlock Context (Error)", () => {
+    // $FlowFixMe
     expect(() => Chester("").unlock("", 1)).to.throw(TypeError);
   });
 
@@ -87,6 +93,7 @@ describe("Testing Chester", () => {
 
   it("Testing Time Travel Error", () => {
     const secret = crypto.randomBytes(256);
+    // $FlowFixMe - flow doesn't understand destructuring
     const chester1 = Chester(secret, { zeroTime: 0 });
     const chester2 = Chester(secret);
     const data = crypto.randomBytes(256).toString("utf8");
@@ -97,6 +104,7 @@ describe("Testing Chester", () => {
   it("Testing Expired Error", () => {
     const secret = crypto.randomBytes(256);
     const chester1 = Chester(secret);
+    // $FlowFixMe - flow doesn't understand destructuring
     const chester2 = Chester(secret, { zeroTime: 0 });
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester1.lock(data);

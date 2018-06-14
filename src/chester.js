@@ -1,3 +1,4 @@
+// @flow
 const crypto = require("crypto");
 const { Crypter } = require("./crypter");
 
@@ -14,18 +15,25 @@ module.exports.DecryptionTimeTravelError = DecryptionTimeTravelError;
 module.exports.DecryptionExpiredError = DecryptionExpiredError;
 
 
-const getZerodUnixTime = zeroTime => Math.floor(new Date() / 1000) - zeroTime;
+const getZerodUnixTime = (zeroTime: number) => Math.floor(new Date() / 1000) - zeroTime;
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
 
-module.exports.Chester = (secret, {
+module.exports.Chester = (secret: string | Buffer, {
   name = "default",
   encoding = "utf8",
   zeroTime = 1514764800,
   maxAgeInSec = 60,
   encryption = 'aes-256-cbc',
   ivLength = 16
+}: {
+  name: string,
+  encoding: 'utf8' | 'ascii' | 'latin1' | 'binary',
+  zeroTime: number,
+  maxAgeInSec: number,
+  encryption: string,
+  ivLength: number
 } = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();
@@ -38,7 +46,7 @@ module.exports.Chester = (secret, {
 
   return {
     _crypter: crypter,
-    lock: (treasure, ...context) => {
+    lock: (treasure: string, ...context: string[]) => {
       if (typeof treasure !== 'string') {
         throw new TypeError();
       }
@@ -48,7 +56,7 @@ module.exports.Chester = (secret, {
 
       const timestamp = getZerodUnixTime(zeroTime);
       const timestampBuffer = Buffer.alloc(4);
-      timestampBuffer.writeUInt32BE(timestamp);
+      timestampBuffer.writeUInt32BE(timestamp, 0);
       const treasureBuffer = Buffer.from(treasure, encoding);
       const signatureBuffer = computeSignature(
         secret,
@@ -61,7 +69,7 @@ module.exports.Chester = (secret, {
       const bytes = Buffer.concat([signatureBuffer, timestampBuffer, treasureBuffer]);
       return crypter.encrypt(bytes);
     },
-    unlock: (chest, ...context) => {
+    unlock: (chest: string, ...context: string[]) => {
       if (typeof chest !== 'string') {
         throw new TypeError();
       }

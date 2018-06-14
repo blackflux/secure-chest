@@ -1,3 +1,4 @@
+// @flow
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -7,7 +8,7 @@ const { Crypter, toUrlSafeBase64, fromUrlSafeBase64 } = require("./../src/crypte
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
-    // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign, // $FlowFixMe
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -15,14 +16,17 @@ const shuffle = (a) => {
 
 describe("Testing Crypter", () => {
   it("Testing Non Buffer Secret (Error)", () => {
+    // $FlowFixMe
     expect(() => Crypter("")).to.throw(TypeError);
   });
 
   it("Testing Non Buffer Encrypt Input (Error)", () => {
+    // $FlowFixMe
     expect(() => Crypter(crypto.randomBytes(128)).encrypt("")).to.throw(TypeError);
   });
 
   it("Testing Non String Decrypt Input (Error)", () => {
+    // $FlowFixMe
     expect(() => Crypter(crypto.randomBytes(128)).decrypt(crypto.randomBytes(0))).to.throw(TypeError);
   });
 

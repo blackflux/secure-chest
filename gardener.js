@@ -1,8 +1,12 @@
+// @flow
 // eslint-disable-next-line import/no-extraneous-dependencies
 const gardener = require('js-gardener');
 
 if (require.main === module) {
   gardener({
-    author: "Lukas Siemon"
+    author: "Lukas Siemon",
+    eslint: {
+      rules: { "flow-enforce": 1 }
+    }
   }).catch(() => process.exit(1));
 }
