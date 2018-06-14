@@ -42,7 +42,7 @@ Type: `string`<br>
 Default: `default`
 
 Define the name of this chest. A chester can not open chests if a chester with a different name but the same key
-locked them. This is mainly a utility function so you can use one secret for all your chests.
+locked them. This is mainly ease-of-life, so one can use the same secret for all chests.
 
 Internally the input is merged with the provided secret and passed into the Crypter.
 
