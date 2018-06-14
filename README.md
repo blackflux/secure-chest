@@ -12,7 +12,19 @@
 
 Sign and Encrypt Data
 
+## Use Case
+
+Web-safe encryption and signing of data. Intendet to temporarily store data with untrusted third party. Useful when storing data on the server is inconvenient, expensive or impossible. 
+
+Data is first signed and then encrypted with a timestamp. This allows to check data for consistency and freshness while making it impossible to obtain data without knowing the secret.
+
 Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. 
 
 ## Getting Started
+
+    $ npm i --save secure-chest
+
+## Implementation Details
+
+### Security
 
