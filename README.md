@@ -65,7 +65,7 @@ Exposes main functionality.
 
 Type: `string` or `Buffer`<br>
 
-Secret used to encrypt data. If `string` is provided it is converted into `Buffer` using provided encoding.
+Secret used to encrypt data. If `string` is provided it is converted into `Buffer` internally using provided encoding.
 
 #### name
 
