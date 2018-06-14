@@ -16,7 +16,7 @@ Sign and Encrypt Data
 
 Web-safe encryption and signing of data. Intended for storing data with untrusted third party. Useful when storing data on the server is expensive, inconvenient or impossible. 
 
-Data is first signed and then with a timestamp encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
+Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
 Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. 
 
