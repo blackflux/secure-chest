@@ -86,7 +86,7 @@ module.exports.Chester = (secret: string | Buffer, {
     try {
       bytes = crypter.decrypt(chest);
     } catch (e) {
-      throw new DecryptionIntegrityError();
+      throw new DecryptionIntegrityError(e);
     }
     const signatureBufferStored = bytes.slice(0, 16);
     const timestampBuffer = bytes.slice(16, 20);
