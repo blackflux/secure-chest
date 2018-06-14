@@ -6,7 +6,8 @@ const {
   DecryptionIntegrityError,
   DecryptionSignatureError,
   DecryptionTimeTravelError,
-  DecryptionExpiredError
+  DecryptionExpiredError,
+  DecryptionJsonError
 } = require("./../src/chester");
 
 describe("Testing Chester", () => {
@@ -33,6 +34,14 @@ describe("Testing Chester", () => {
   it("Testing Non String Unlock Context (Error)", () => {
     // $FlowFixMe
     expect(() => Chester("").unlock("", 1)).to.throw(TypeError);
+  });
+
+  it("Testing JSON", () => {
+    const chester = Chester(crypto.randomBytes(256));
+    const data = { property: "value" };
+    const chest = chester.lockObj(data);
+    const output = chester.unlockObj(chest);
+    expect(data).to.deep.equal(output);
   });
 
   it("Testing Different Length", () => {
@@ -109,5 +118,12 @@ describe("Testing Chester", () => {
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester1.lock(data);
     expect(() => chester2.unlock(chest)).to.throw(DecryptionExpiredError);
+  });
+
+  it("Testing Json Error", () => {
+    const chester = Chester(crypto.randomBytes(256));
+    const data = "{";
+    const chest = chester.lock(data);
+    expect(() => chester.unlockObj(chest)).to.throw(DecryptionJsonError);
   });
 });

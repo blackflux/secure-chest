@@ -30,11 +30,11 @@ const Chester = require("secure-chest").Chester;
 
 const chester = Chester("SECRET-ENCRYPTION-KEY");
 
-const chest = chester.lock(JSON.stringify({ username: "John Doe" }));
+const chest = chester.lockObj({ username: "John Doe" });
 
 // ... store chest with client ...
 
-const welcome = `Hello ${JSON.parse(chester.unlock(chest)).username}!`;
+const welcome = `Hello ${chester.unlockObj(chest).username}!`;
 console.log(welcome);
 // => "Hello John Doe"
 ```
@@ -118,6 +118,10 @@ The chest is not valid yet. This usually only happens when the zeroTime is chang
 
 The chest has expired.
 
+#### DecryptionJsonError
+
+Thrown from `unlockObj` when parsing json fails. 
+
 ### Functions
 
 #### lock
@@ -128,6 +132,10 @@ Create and "lock" new chest. Takes data to encrypt as first argument and context
 
 When unlocking chest where contexts have been provided to lock it, unlocking requires the contexts to be identical.
 
+#### lockObj
+
+Wraps `lock`, and `JSON.stringify` is applied to first argument.
+
 #### unlock
 
 `unlock(chest, ...contexts)`
@@ -135,6 +143,10 @@ When unlocking chest where contexts have been provided to lock it, unlocking req
 Unlock a chest and returns data. Takes data to decrypt as first argument and contexts as additional arguments.
 
 This method can throw various errors (see section).
+
+#### unlockObj
+
+Wraps `unlock`, and `JSON.parse` is applied to return value. On failure `DecryptionJsonError` is thrown.
 
 #### _crypter
 
