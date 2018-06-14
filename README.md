@@ -75,7 +75,7 @@ Default: `default`
 Name of this Chester. A Chester can not open chests if Chester with different name but same secret
 locked them. Ease-of-life, so one can use same secret for different Chester.
 
-Internally input is merged with provided secret and passed into underlying Crypter.
+Internally name is merged with provided secret and passed into underlying Crypter.
 
 #### encoding
 
