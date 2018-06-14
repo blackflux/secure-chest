@@ -24,15 +24,16 @@ Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$
 
     $ npm i --save secure-chest
 
-<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-console, no-undef -->
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-console -->
 ```js
 const Chester = require("secure-chest").Chester;
 
 const chester = Chester("SECRET-ENCRYPTION-KEY");
 
-sendToClient(chester.lock(({ userId: 1, userName: "John Doe" })));
+const cookie = chester.lock(JSON.stringify({ username: "John Doe" }));
 // ---- new request
-console.log(`Hello ${JSON.parse(chester.unlock(chester.unlock(getFromClient()))).username}!`);
+const hello = `Hello ${JSON.parse(chester.unlock(cookie)).username}!`;
+console.log(hello);
 // => "Hello John Doe"
 ```
 
