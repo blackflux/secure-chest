@@ -15,7 +15,8 @@ describe("Testing Index", () => {
       "DecryptionExpiredError",
       "DecryptionIntegrityError",
       "DecryptionSignatureError",
-      "DecryptionTimeTravelError"
+      "DecryptionTimeTravelError",
+      "constants"
     );
   });
 });

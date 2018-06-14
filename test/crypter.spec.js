@@ -4,6 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const expect = require('chai').expect;
 const { Crypter, toUrlSafeBase64, fromUrlSafeBase64 } = require("./../src/crypter");
+const constants = require("./../src/constants");
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
@@ -28,6 +29,26 @@ describe("Testing Crypter", () => {
   it("Testing Non String Decrypt Input (Error)", () => {
     // $FlowFixMe
     expect(() => Crypter(crypto.randomBytes(128)).decrypt(crypto.randomBytes(0))).to.throw(TypeError);
+  });
+
+  it("Testing Invalid Gzip Mode (Error)", () => {
+    // $FlowFixMe
+    expect(() => Crypter(crypto.randomBytes(128), { gzip: "invalid" })).to.throw(TypeError);
+  });
+
+  it("Test Gzip Modes Force vs Never", () => {
+    const secret = crypto.randomBytes(256);
+    const crypterGzip = Crypter(secret, { gzip: constants.GZIP_MODE.FORCE });
+    const crypterPlain = Crypter(secret, { gzip: constants.GZIP_MODE.NEVER });
+    const data = Buffer.from("0".repeat(1024), "utf8");
+    const encryptedGzip = crypterGzip.encrypt(data);
+    const encryptedPlain = crypterPlain.encrypt(data);
+    expect(encryptedGzip.length).to.be.below(encryptedPlain.length);
+    // cross extract
+    const decryptedGzip = crypterPlain.decrypt(encryptedGzip);
+    const decryptedPlain = crypterGzip.decrypt(encryptedPlain);
+    expect(Buffer.compare(decryptedGzip, data)).to.equal(0);
+    expect(Buffer.compare(decryptedGzip, decryptedPlain)).to.equal(0);
   });
 
   it("Testing Custom Base64 Encoding", () => {

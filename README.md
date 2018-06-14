@@ -18,7 +18,7 @@ Intended for storing data with untrusted party. Useful when storing data on serv
 
 Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
-Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. 
+Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. Internally Gzip is used when this shortens the tokens.
 
 ## Getting Started
 
@@ -31,7 +31,10 @@ Below is an example flow that allows users to be signed in without persisting an
 ```js
 const { Chester, DecryptionExpiredError } = require("secure-chest");
 
-const chester = Chester("SECRET-ENCRYPTION-KEY");
+const chester = Chester("SECRET-ENCRYPTION-KEY", {
+  name: "facebook-auth",
+  maxAgeInSec: 60 * 60 // require re-auth every hour
+});
 
 // ... facebook oauth flow ...
 
@@ -55,6 +58,41 @@ try {
 }
 ```
 
+Or to create an unsubscribe link without storing information on the server one could use it as follows.
+
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef, no-unused-vars -->
+```js
+const { Chester, DecryptionExpiredError } = require("secure-chest");
+
+const chester = Chester("SECRET-ENCRYPTION-KEY", {
+  name: "email-unsubscribe",
+  maxAgeInSec: 60 * 60 * 24 * 90 // link is valid for 90 days
+});
+
+// could also include hashed password-salt if unsubscribe links should be invalidated when password changes
+const unsubscribeLink = `https://domain.com/unsubscribe?token=${chester.lockObj({ userId, userEmail })}`;
+
+// ... generate and send email to user ...
+
+// ... user clicks unsubscribe link ...
+
+const token = getQueryParam("token");
+
+try {
+  const info = chester.unlockObj(token);
+  const user = findUser(info.userId, info.userEmail);
+  if (user) {
+    unsubscribe(user);
+  } else {
+    // user does not exist or email address was changed
+  }
+} catch (e) {
+  if (e instanceof DecryptionExpiredError) {
+    // unsubscribe link has expired
+  }
+}
+```
+
 ## Chester
 
 Exposes main functionality.
@@ -65,7 +103,7 @@ Exposes main functionality.
 
 Type: `string` or `Buffer`<br>
 
-Secret used to encrypt data. If `string` is provided it is converted into `Buffer` using provided encoding.
+Secret used to encrypt data. If `string` is provided it is converted into `Buffer` internally using provided encoding.
 
 #### name
 
@@ -75,12 +113,12 @@ Default: `default`
 Name of this Chester. A Chester can not open chests if Chester with different name but same secret
 locked them. Ease-of-life, so one can use same secret for different Chester.
 
-Internally input is merged with provided secret and passed into underlying Crypter.
+Internally name is merged with provided secret and passed into underlying Crypter.
 
 #### encoding
 
-Type: `string`<br>
-Default: `utf8`
+Type: `constants.ENCODING`<br>
+Default: `constants.ENCODING.utf8`
 
 Encoding used to convert between strings and Buffers. For most cases `utf8` is suitable.
 
@@ -101,6 +139,10 @@ Default: `60`
 Maximum age in seconds before chest expires and `DecryptionExpiredError` is thrown when trying to unlock it. 
 
 When value is changed it is automatically changed for all previously created chests, since chests only store a timestamp.
+
+#### gzip
+
+See Crypter below
 
 #### encryption
 
@@ -195,6 +237,10 @@ Used to encrypt and decrypt data using `aes-256-cbc` with `16` bit random IV by 
 
 Deals only with Buffers and produced web-safe base64 and hence is encoding independent.
 
+Internally this uses GZip when this shortens the output.
+
+*Important*: Errors are not explicitly handled.
+
 ### Functions
 
 #### encrypt
@@ -216,6 +262,15 @@ Takes a web-safe base64 encoded string and decrypts it into a Buffer.
 Type: `Buffer`<br>
 
 Secret used to encrypt data. Internally this gets hashed.
+
+#### gzip
+
+Type: `constant.GZIP_MODE`<br>
+Default: `constant.GZIP_MODE.AUTO`
+
+Overwrite gzip mode. By default gzip mode is only used when output is shortened. Useful when gzip is computationally too expensive.
+
+Will not change how first bit is set in IV and hence ok to change for existing tokens.
 
 #### encryption
 
@@ -247,6 +302,20 @@ const decrypted = crypter.decrypt(encrypted);
 Buffer.compare(data, decrypted);
 // => 0
 ```
+
+## Constants
+
+### GZIP_MODE
+
+Values `AUTO`, `NEVER`, `FORCE`
+
+Defines gzip mode used internally.
+
+### ENCODING
+
+Values `utf8`, `ascii`, `latin1`, `binary`
+
+Defines encoding for string to buffer conversions.
 
 ## Utility Functions
 
