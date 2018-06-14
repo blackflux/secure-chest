@@ -32,7 +32,7 @@ Below is an example flow that allows users to be signed in without persisting an
 const { Chester, DecryptionExpiredError } = require("secure-chest");
 
 const chester = Chester("SECRET-ENCRYPTION-KEY", {
-  name: "facebook-auth", 
+  name: "facebook-auth",
   maxAgeInSec: 60 * 60 // require re-auth every hour
 });
 
@@ -60,12 +60,12 @@ try {
 
 Or to create an unsubscribe link without storing information on the server one could use it as follows.
 
-<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef, no-unused-vars -->
 ```js
 const { Chester, DecryptionExpiredError } = require("secure-chest");
 
-const chester = Chester("SECRET-ENCRYPTION-KEY", { 
-  name: "email-unsubscribe", 
+const chester = Chester("SECRET-ENCRYPTION-KEY", {
+  name: "email-unsubscribe",
   maxAgeInSec: 60 * 60 * 24 * 90 // link is valid for 90 days
 });
 
