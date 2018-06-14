@@ -34,12 +34,12 @@ module.exports.Chester = (secret: string | Buffer, {
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: {
-  name: string,
-  encoding: 'utf8' | 'ascii' | 'latin1' | 'binary',
-  zeroTime: number,
-  maxAgeInSec: number,
-  encryption: string,
-  ivLength: number
+  name?: string,
+  encoding?: 'utf8' | 'ascii' | 'latin1' | 'binary',
+  zeroTime?: number,
+  maxAgeInSec?: number,
+  encryption?: string,
+  ivLength?: number
 } = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();

@@ -84,9 +84,7 @@ describe("Testing Chester", () => {
 
   it("Testing Name Mismatch", () => {
     const secret = crypto.randomBytes(256);
-    // $FlowFixMe - flow doesn't understand destructuring
     const chester1 = Chester(secret, { name: "chester1" });
-    // $FlowFixMe - flow doesn't understand destructuring
     const chester2 = Chester(secret, { name: "chester2" });
     const data = crypto.randomBytes(4096).toString("utf8");
     const chest = chester1.lock(data);
@@ -132,7 +130,6 @@ describe("Testing Chester", () => {
 
   it("Testing Time Travel Error", () => {
     const secret = crypto.randomBytes(256);
-    // $FlowFixMe - flow doesn't understand destructuring
     const chester1 = Chester(secret, { zeroTime: 0 });
     const chester2 = Chester(secret);
     const data = crypto.randomBytes(256).toString("utf8");
@@ -143,7 +140,6 @@ describe("Testing Chester", () => {
   it("Testing Expired Error", () => {
     const secret = crypto.randomBytes(256);
     const chester1 = Chester(secret);
-    // $FlowFixMe - flow doesn't understand destructuring
     const chester2 = Chester(secret, { zeroTime: 0 });
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester1.lock(data);
