@@ -21,12 +21,12 @@ module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 * this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
 * */
 
-module.exports.Crypter = (secret, { encryption = 'aes-256-cbc', ivLength = 16 } = {}) => {
+module.exports.Crypter = (secret, { encoding = "utf8", encryption = 'aes-256-cbc', ivLength = 16 } = {}) => {
   if (!Buffer.isBuffer(secret)) {
     throw new TypeError();
   }
 
-  const secretHash = crypto.createHash('sha256').update(secret).digest();
+  const secretHash = crypto.createHash('sha256').update(secret, encoding).digest();
 
   return {
     encrypt: (buffer) => {

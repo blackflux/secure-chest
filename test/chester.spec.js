@@ -17,8 +17,16 @@ describe("Testing Chester", () => {
     expect(() => Chester("").lock(1)).to.throw(TypeError);
   });
 
+  it("Testing Non String Lock Context (Error)", () => {
+    expect(() => Chester("").lock("", 1)).to.throw(TypeError);
+  });
+
   it("Testing Non String Unlock Input (Error)", () => {
     expect(() => Chester("").unlock(1)).to.throw(TypeError);
+  });
+
+  it("Testing Non String Unlock Context (Error)", () => {
+    expect(() => Chester("").unlock("", 1)).to.throw(TypeError);
   });
 
   it("Testing Different Length", () => {
@@ -37,6 +45,24 @@ describe("Testing Chester", () => {
     const chest = chester.lock(data);
     const output = chester.unlock(chest);
     expect(data).to.equal(output);
+  });
+
+  it("Testing Context", () => {
+    const chester = Chester(crypto.randomBytes(256));
+    const data = crypto.randomBytes(256).toString("utf8");
+    const context = crypto.randomBytes(256).toString("utf8");
+    const chest = chester.lock(data, context);
+    const output = chester.unlock(chest, context);
+    expect(data).to.equal(output);
+  });
+
+  it("Testing Context Mismatch", () => {
+    const chester = Chester(crypto.randomBytes(256));
+    const data = crypto.randomBytes(256).toString("utf8");
+    const context = crypto.randomBytes(256).toString("utf8");
+    const context2 = crypto.randomBytes(256).toString("utf8");
+    const chest = chester.lock(data, context);
+    expect(() => chester.unlock(chest, context2)).to.throw(DecryptionSignatureError);
   });
 
   it("Testing Integrity Error", () => {

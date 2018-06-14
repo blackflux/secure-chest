@@ -15,7 +15,8 @@ module.exports.DecryptionExpiredError = DecryptionExpiredError;
 
 
 const getZerodUnixTime = zeroTime => Math.floor(new Date() / 1000) - zeroTime;
-const computeSignature = (secret, ...input) => crypto.createHmac('md5', secret).update(...input).digest();
+const computeSignature = (secret, encoding, ...input) => input
+  .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
 
 module.exports.Chester = (secret, {
@@ -33,12 +34,15 @@ module.exports.Chester = (secret, {
   const crypter = Crypter(Buffer.concat([
     typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
-  ]), { encryption, ivLength });
+  ]), { encoding, encryption, ivLength });
 
   return {
     _crypter: crypter,
-    lock: (treasure) => {
+    lock: (treasure, ...context) => {
       if (typeof treasure !== 'string') {
+        throw new TypeError();
+      }
+      if (context.some(c => typeof c !== 'string')) {
         throw new TypeError();
       }
 
@@ -46,13 +50,22 @@ module.exports.Chester = (secret, {
       const timestampBuffer = Buffer.alloc(4);
       timestampBuffer.writeUInt32BE(timestamp);
       const treasureBuffer = Buffer.from(treasure, encoding);
-      const signatureBuffer = computeSignature(secret, treasureBuffer, timestampBuffer);
+      const signatureBuffer = computeSignature(
+        secret,
+        encoding,
+        treasureBuffer,
+        timestampBuffer,
+        ...context.map(c => Buffer.from(c, encoding))
+      );
 
       const bytes = Buffer.concat([signatureBuffer, timestampBuffer, treasureBuffer]);
       return crypter.encrypt(bytes);
     },
-    unlock: (chest) => {
+    unlock: (chest, ...context) => {
       if (typeof chest !== 'string') {
+        throw new TypeError();
+      }
+      if (context.some(c => typeof c !== 'string')) {
         throw new TypeError();
       }
 
@@ -62,11 +75,18 @@ module.exports.Chester = (secret, {
       } catch (e) {
         throw new DecryptionIntegrityError();
       }
-      const signatureBuffer = bytes.slice(0, 16);
+      const signatureBufferStored = bytes.slice(0, 16);
       const timestampBuffer = bytes.slice(16, 20);
       const treasureBuffer = bytes.slice(20);
       const timestamp = timestampBuffer.readUInt32BE(0);
-      if (Buffer.compare(signatureBuffer, computeSignature(secret, treasureBuffer, timestampBuffer)) !== 0) {
+      const signatureBufferComputed = computeSignature(
+        secret,
+        encoding,
+        treasureBuffer,
+        timestampBuffer,
+        ...context.map(c => Buffer.from(c, encoding))
+      );
+      if (Buffer.compare(signatureBufferStored, signatureBufferComputed) !== 0) {
         throw new DecryptionSignatureError();
       }
       const ageInSec = getZerodUnixTime(zeroTime) - timestamp;
