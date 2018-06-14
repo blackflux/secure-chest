@@ -3,12 +3,16 @@ const crypto = require("crypto");
 const { Crypter } = require("./crypter");
 
 
+class EncryptionError extends Error {}
+class EncryptionJsonError extends EncryptionError {}
 class DecryptionError extends Error {}
 class DecryptionIntegrityError extends DecryptionError {}
 class DecryptionSignatureError extends DecryptionError {}
 class DecryptionTimeTravelError extends DecryptionError {}
 class DecryptionExpiredError extends DecryptionError {}
 class DecryptionJsonError extends DecryptionError {}
+module.exports.EncryptionError = EncryptionError;
+module.exports.EncryptionJsonError = EncryptionJsonError;
 module.exports.DecryptionError = DecryptionError;
 module.exports.DecryptionIntegrityError = DecryptionIntegrityError;
 module.exports.DecryptionSignatureError = DecryptionSignatureError;
@@ -112,7 +116,16 @@ module.exports.Chester = (secret: string | Buffer, {
     _crypter: crypter,
     lock,
     unlock,
-    lockObj: (treasure: Object, ...contexts: string[]) => lock(JSON.stringify(treasure), ...contexts),
+    lockObj: (treasure: Object, ...contexts: string[]) => {
+      if (!(treasure instanceof Object)) {
+        throw new TypeError();
+      }
+      try {
+        return lock(JSON.stringify(treasure), ...contexts);
+      } catch (e) {
+        throw new EncryptionJsonError(e);
+      }
+    },
     unlockObj: (chest: string, ...contexts: string[]) => {
       const str = unlock(chest, ...contexts);
       try {

@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const expect = require('chai').expect;
 const {
   Chester,
+  EncryptionJsonError,
   DecryptionIntegrityError,
   DecryptionSignatureError,
   DecryptionTimeTravelError,
@@ -34,6 +35,11 @@ describe("Testing Chester", () => {
   it("Testing Non String Unlock Context (Error)", () => {
     // $FlowFixMe
     expect(() => Chester("").unlock("", 1)).to.throw(TypeError);
+  });
+
+  it("Testing Non Object UnlockObj Input (Error)", () => {
+    // $FlowFixMe
+    expect(() => Chester("").lockObj(1)).to.throw(TypeError);
   });
 
   it("Testing JSON", () => {
@@ -120,10 +126,17 @@ describe("Testing Chester", () => {
     expect(() => chester2.unlock(chest)).to.throw(DecryptionExpiredError);
   });
 
-  it("Testing Json Error", () => {
+  it("Testing Decryption Json Error", () => {
     const chester = Chester(crypto.randomBytes(256));
     const data = "{";
     const chest = chester.lock(data);
     expect(() => chester.unlockObj(chest)).to.throw(DecryptionJsonError);
+  });
+
+  it("Testing Encryption Json Error", () => {
+    const chester = Chester(crypto.randomBytes(256));
+    const obj = {};
+    obj.recursive = obj;
+    expect(() => chester.lockObj(obj)).to.throw(EncryptionJsonError);
   });
 });

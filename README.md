@@ -112,6 +112,14 @@ See Cryper below
 
 ### Errors
 
+#### EncryptionError
+
+General Encryption Error that all Encryption Errors inherit from.
+
+#### EncryptionJsonError
+
+Thrown from `lockObj` when `JSON.stringify` fails. 
+
 #### DecryptionError
 
 General Decryption Error that all Decryption Errors inherit from.
@@ -136,7 +144,7 @@ The chest has expired.
 
 #### DecryptionJsonError
 
-Thrown from `unlockObj` when parsing json fails. 
+Thrown from `unlockObj` when `JSON.parse` fails. 
 
 ### Functions
 
@@ -150,7 +158,7 @@ When unlocking chest where contexts have been provided to lock it, unlocking req
 
 #### lockObj
 
-Wraps `lock`, and `JSON.stringify` is applied to first argument.
+Wraps `lock`, and `JSON.stringify` is applied to first argument. On failure `EncryptionJsonError` is thrown.
 
 #### unlock
 

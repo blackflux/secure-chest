@@ -9,6 +9,8 @@ describe("Testing Index", () => {
       "toUrlSafeBase64",
       "fromUrlSafeBase64",
       "Chester",
+      "EncryptionError",
+      "EncryptionJsonError",
       "DecryptionError",
       "DecryptionExpiredError",
       "DecryptionIntegrityError",
