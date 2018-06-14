@@ -64,6 +64,7 @@ module.exports.Chester = (secret: string | Buffer, {
       throw new TypeError();
     }
 
+    // what's the rationale for storing these in fixed widths at the end of the message?
     const timestamp = getZerodUnixTime(zeroTime);
     const timestampBuffer = Buffer.alloc(4);
     timestampBuffer.writeUInt32BE(timestamp, 0);
@@ -119,9 +120,10 @@ module.exports.Chester = (secret: string | Buffer, {
   };
 
   return {
-    _crypter: crypter,
+    _crypter: crypter, // why is this exposed?
     lock,
     unlock,
+    // what is the case for contexts?
     lockObj: (treasure: Object, ...contexts: string[]) => {
       if (!(treasure instanceof Object)) {
         throw new TypeError();
