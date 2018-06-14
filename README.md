@@ -14,7 +14,7 @@ Web-safe Encryption and Signing of Data
 
 ## Use Case
 
-Intended for storing data with untrusted party. Useful when storing data on server is expensive, inconvenient or impossible. 
+Intended for storing data with untrusted party. Useful when storing data on server is expensive, forbidden, inconvenient or impossible. 
 
 Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
@@ -24,19 +24,35 @@ Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$
 
     $ npm i --save secure-chest
 
+
+Below is an example flow that allows users to be signed in without persisting any information on the server.
+
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-console -->
 ```js
-const Chester = require("secure-chest").Chester;
+const { Chester } = require("secure-chest");
 
 const chester = Chester("SECRET-ENCRYPTION-KEY");
 
-const chest = chester.lockObj({ username: "John Doe" });
+// ... facebook oauth flow ...
+
+const token = getFacebookSessionToken();
+const chest = chester.lockObj({ token });
 
 // ... store chest with client ...
 
-const welcome = `Hello ${chester.unlockObj(chest).username}!`;
-console.log(welcome);
-// => "Hello John Doe"
+// ... time passes ...
+
+// .. client makes request and provides chest ...
+
+try {
+  if (isValidFacebookUser(chester.unlockObj(chest))) {
+    // welcome back
+  }
+} catch (e) {
+  if (e instanceof DecryptionExpiredError) {
+    // ... re-authenticate with facebook ...
+  }
+}
 ```
 
 ## Chester
