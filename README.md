@@ -239,6 +239,8 @@ Deals only with Buffers and produced web-safe base64 and hence is encoding indep
 
 Internally this uses GZip when this shortens the output.
 
+*Important*: Errors are not explicitly handled.
+
 ### Functions
 
 #### encrypt
