@@ -7,9 +7,11 @@ const toUrlSafeBase64 = (input: Buffer) => input
   .toString('base64')
   .replace(/\+/g, "-")
   .replace(/\//g, "_")
-  .replace(/=*$/, m => m.length.toString());
+  .replace(/=*$/, m => m.length.toString()); // why not just strip everything?
 module.exports.toUrlSafeBase64 = toUrlSafeBase64;
 
+// I don't think this is needed -- node supports creating from a URL & Filename safe base64 string directly
+// -- BUT -- not sure what version that's from either so maybe needed for 4.x support?
 const fromUrlSafeBase64 = (input: string) => Buffer.from(input
   .replace(/[012]$/, m => '='.repeat(parseInt(m, 10)))
   .replace(/_/g, "/")
@@ -32,6 +34,7 @@ module.exports.Crypter = (secret: Buffer, {
     throw new TypeError();
   }
 
+  // The point is generate a potentially longer passphrase?
   const secretHash = crypto.createHash('sha256')
     // https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
     .update(secret)
@@ -55,6 +58,7 @@ module.exports.Crypter = (secret: Buffer, {
 
       const iv = crypto.randomBytes(ivLength);
       // eslint-disable-next-line no-bitwise
+      // you're basically packing the gzip boolean into the first bit here?
       iv[0] = useGzip ? iv[0] | 1 : iv[0] & ~1;
       const cipher = crypto.createCipheriv(encryption, secretHash, iv);
       const rawEncrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]);
@@ -66,6 +70,7 @@ module.exports.Crypter = (secret: Buffer, {
       }
 
       const rawEncrypted = fromUrlSafeBase64(base64);
+      // a diff in ivlength between the payload & `ivLength` would break this
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
       const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
