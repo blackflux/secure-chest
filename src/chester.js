@@ -1,6 +1,7 @@
 // @flow
 const crypto = require("crypto");
 const { Crypter } = require("./crypter");
+const constants = require("./constants");
 
 
 class EncryptionError extends Error {}
@@ -28,20 +29,25 @@ const computeSignature = (secret, encoding, ...input) => input
 
 module.exports.Chester = (secret: string | Buffer, {
   name = "default",
-  encoding = "utf8",
+  encoding = constants.ENCODING.utf8,
   zeroTime = 1514764800,
   maxAgeInSec = 60,
+  gzip = constants.GZIP_MODE.auto,
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: {
   name?: string,
-  encoding?: 'utf8' | 'ascii' | 'latin1' | 'binary',
+  encoding?: $Keys<typeof constants.ENCODING>,
   zeroTime?: number,
   maxAgeInSec?: number,
+  gzip?: $Keys<typeof constants.GZIP_MODE>,
   encryption?: string,
   ivLength?: number
 } = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
+    throw new TypeError();
+  }
+  if (Object.keys(constants.ENCODING).indexOf(encoding) === -1) {
     throw new TypeError();
   }
 

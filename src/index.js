@@ -11,3 +11,4 @@ module.exports.DecryptionExpiredError = require("./chester").DecryptionExpiredEr
 module.exports.DecryptionIntegrityError = require("./chester").DecryptionIntegrityError;
 module.exports.DecryptionSignatureError = require("./chester").DecryptionSignatureError;
 module.exports.DecryptionTimeTravelError = require("./chester").DecryptionTimeTravelError;
+module.exports.constants = require("./constants");
