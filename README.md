@@ -34,15 +34,15 @@ Exposes main functionality.
 
 Type: `string` or `Buffer`<br>
 
-Define the secret that is used to encrypt the data. A string is converted into a Buffer using the provided encoding.
+Define the secret that is used to encrypt the data. If string is provided it is converted into a Buffer using the provided encoding.
 
 #### name
 
 Type: `string`<br>
 Default: `default`
 
-Define the name of this chest. A chester can not open chests if a chester with a different name but the same key
-locked them. This is mainly ease-of-life, so one can use the same secret for all chests.
+Name of this Chester. A Chester can not open chests if a Chester with a different name but the same secret
+locked them. This is mainly ease-of-life, so one can use the same secret for different Chester.
 
 Internally the input is merged with the provided secret and passed into the Crypter.
 
