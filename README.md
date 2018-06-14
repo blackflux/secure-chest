@@ -51,7 +51,7 @@ Internally the input is merged with the provided secret and passed into the Cryp
 Type: `string`<br>
 Default: `utf8`
 
-The encoding used to convert between strings and Buffers. For most cases `utf8` should be suitable.
+The encoding used to convert between strings and Buffers. For most cases `utf8` is suitable.
 
 #### zeroTime
 
