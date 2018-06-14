@@ -10,11 +10,11 @@
 [![Gardener](https://github.com/simlu/js-gardener/blob/master/assets/badge.svg)](https://github.com/simlu/js-gardener)
 [![Gitter](https://github.com/simlu/js-gardener/blob/master/assets/icons/gitter.svg)](https://gitter.im/simlu/secure-chest)
 
-Sign and Encrypt Data
+Web-safe Encryption and Signing of Data
 
 ## Use Case
 
-Web-safe encryption and signing of data. Intended for storing data with untrusted party. Useful when storing data on the server is expensive, inconvenient or impossible. 
+Intended for storing data with untrusted party. Useful when storing data on server is expensive, inconvenient or impossible. 
 
 Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
@@ -23,6 +23,18 @@ Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$
 ## Getting Started
 
     $ npm i --save secure-chest
+
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-console, no-undef -->
+```js
+const Chester = require("secure-chest").Chester;
+
+const chester = Chester("SECRET-ENCRYPTION-KEY");
+
+sendToClient(chester.lock(({ userId: 1, userName: "John Doe" })));
+// ---- new request
+console.log(`Hello ${JSON.parse(chester.unlock(chester.unlock(getFromClient()))).username}!`);
+// => "Hello John Doe"
+```
 
 ## Chester
 
@@ -34,41 +46,42 @@ Exposes main functionality.
 
 Type: `string` or `Buffer`<br>
 
-Define the secret that is used to encrypt the data. If string is provided it is converted into a Buffer using the provided encoding.
+Secret used to encrypt data. If `string` is provided it is converted into `Buffer` using provided encoding.
 
 #### name
 
 Type: `string`<br>
 Default: `default`
 
-Name of this Chester. A Chester can not open chests if a Chester with a different name but the same secret
-locked them. This is mainly ease-of-life, so one can use the same secret for different Chester.
+Name of this Chester. A Chester can not open chests if Chester with different name but same secret
+locked them. Ease-of-life, so one can use same secret for different Chester.
 
-Internally the input is merged with the provided secret and passed into the Crypter.
+Internally input is merged with provided secret and passed into underlying Crypter.
 
 #### encoding
 
 Type: `string`<br>
 Default: `utf8`
 
-The encoding used to convert between strings and Buffers. For most cases `utf8` is suitable.
+Encoding used to convert between strings and Buffers. For most cases `utf8` is suitable.
 
 #### zeroTime
 
 Type: `number`<br>
 Default: `1514764800`
 
-Used to delay the year [2038 problem](https://en.wikipedia.org/wiki/Year_2038_problem). This should not be changes.
+Used to delay year [2038 problem](https://en.wikipedia.org/wiki/Year_2038_problem). Should never be changed.
 
-Since the timestamp is stored as 4 bytes, using this offset the overflow is delayed for 48 years.
+Necessary since timestamp is stored as 4 bytes.
 
 #### maxAgeInSec
 
 Type: `number`<br>
 Default: `60`
 
-Maximum age before this token is considered expired and a `DecryptionExpiredError` is thrown. When this value is changed
-it is automatically changed for all previously created tokens as well, since only the timestamp is stored with the token.
+Maximum age in seconds before chest expires and `DecryptionExpiredError` is thrown when trying to unlock it. 
+
+When value is changed it is automatically changed for all previously created chests, since chests only store a timestamp.
 
 #### encryption
 
@@ -82,17 +95,17 @@ See Cryper below
 
 #### DecryptionError
 
-General Base Error that all other decryption errors inherit from.
+General Decryption Error that all Decryption Errors inherit from.
 
 #### DecryptionIntegrityError
 
-The provided data could not be decrypted. This can be an indication for invalid data or an incorrect secret or name.
+Provided data can not be decrypted. Can be indication for invalid data or incorrect secret or name.
 
 #### DecryptionSignatureError
 
-The data was decrypted successfully, however the signature does not match. This can sometimes indicate invalid data or an incorrect secret or name.
+Data was decrypted successfully, but signature did not match. Can also indicate invalid data or an incorrect secret or name.
 
-However if a different context is passed, this error is also thrown.
+Also thrown when context was changed.
 
 #### DecryptionTimeTravelError
 
@@ -106,27 +119,23 @@ The chest has expired.
 
 #### lock
 
-`lock(treasure, ...context)`
+`lock(treasure, ...contexts)`
 
-Create and "lock" a new chest. This takes the data to encrypt as its first argument and all additional arguments are
-considered context. 
+Create and "lock" new chest. Takes data to encrypt as first argument and contexts as additional arguments.
 
-When unlocking a chest where a context has been provided to lock it, the unlocking is only
-successful if the context is provided the same way to the unlock function. Otherwise a DecryptionSignatureError
-is thrown.
+When unlocking chest where contexts have been provided to lock it, unlocking requires the contexts to be identical.
 
 #### unlock
 
-`unlock(chest, ...context)`
+`unlock(chest, ...contexts)`
 
-Unlock a chest and returns data. This takes the data to decrypt as its first argument and all additional arguments are
-considered context.
+Unlock a chest and returns data. Takes data to decrypt as first argument and contexts as additional arguments.
 
 This method can throw various errors (see section).
 
 #### _crypter
 
-Exposes the underlying Crypter that is used. Useful for debugging.
+Exposes the underlying Crypter. Useful for debugging.
 
 ### Example
 
@@ -143,7 +152,7 @@ chester.unlock(chest);
 
 ## Crypter
 
-Used to encrypt and decrypt data using `aes-256-cbc` with a `16` bit random IV by default (see notes below).
+Used to encrypt and decrypt data using `aes-256-cbc` with `16` bit random IV by default (see notes below).
 
 Deals only with Buffers and produced web-safe base64 and hence is encoding independent.
 
@@ -167,21 +176,21 @@ Takes a web-safe base64 encoded string and decrypts it into a Buffer.
 
 Type: `Buffer`<br>
 
-Define the secret that is used to encrypt the data. Internally this gets hashed to produce a suitable key.
+Secret used to encrypt data. Internally this gets hashed.
 
 #### encryption
 
 Type: `string`<br>
 Default: `aes-256-cbc`
 
-Defines the encryption type. IV length must be adjusted accordingly when changed.
+Defines encryption algorithm. IV length must be compatible.
 
 #### ivLength
 
 Type: `number`<br>
 Default: `16`
 
-Defines the length of the IV. Must be compatible with the encryption.
+Defines length of IV. Must be compatible with encryption.
 
 ### Example
 
@@ -202,13 +211,17 @@ Buffer.compare(data, decrypted);
 
 ## Utility Functions
 
-The functions `toUrlSafeBase64` and `fromUrlSafeBase64` are exposed. 
+The functions `toUrlSafeBase64` and `fromUrlSafeBase64` are exposed.
+
+`toUrlSafeBase64(Buffer)`
+ 
+`fromUrlSafeBase64(Base64)` 
 
 ## Implementation Notes
 
 This project is considered complete and won't see any major features or changes.
 
-Input values are heavily checked and a `TypeError` is raised if they are not as expected.
+Input values are heavily checked and `TypeError` is raised if invalid.
 
 ## Security Observations
 
