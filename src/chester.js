@@ -22,7 +22,9 @@ module.exports.Chester = (secret, {
   name = "default",
   encoding = "utf8",
   zeroTime = 1514764800,
-  maxAgeInSec = 60
+  maxAgeInSec = 60,
+  encryption = 'aes-256-cbc',
+  ivLength = 16
 } = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();
@@ -31,7 +33,7 @@ module.exports.Chester = (secret, {
   const crypter = Crypter(Buffer.concat([
     typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
-  ]));
+  ]), { encryption, ivLength });
 
   return {
     _crypter: crypter,

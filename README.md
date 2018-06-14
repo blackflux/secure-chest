@@ -26,5 +26,7 @@ Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$
 
 ## Implementation Details
 
+This project is considered complete and won't see any major features or changes.
+
 ### Security
 
