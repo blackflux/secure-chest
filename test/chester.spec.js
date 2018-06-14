@@ -40,7 +40,7 @@ describe("Testing Chester", () => {
   });
 
   it("Testing String Secret", () => {
-    const chester = Chester(crypto.randomBytes(256).toString());
+    const chester = Chester(crypto.randomBytes(256).toString("utf8"));
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester.lock(data);
     const output = chester.unlock(chest);
