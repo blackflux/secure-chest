@@ -16,18 +16,10 @@ const fromUrlSafeBase64 = (input: string) => Buffer.from(input
   .replace(/-/g, "+"), 'base64');
 module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
 
-
-/*
-* Security Observations: GZip only used when this shortens output. One bit in IV indicates
-* this and hence only len - 1 bits are truly random. Acceptable when len(IV) >= 16 bytes.
-* */
-
-module.exports.Crypter = (secret: string | Buffer, {
-  encoding = "utf8",
+module.exports.Crypter = (secret: Buffer, {
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: {
-  encoding: 'utf8' | 'ascii' | 'latin1' | 'binary',
   encryption: string,
   ivLength: number
 } = {}) => {
@@ -35,7 +27,10 @@ module.exports.Crypter = (secret: string | Buffer, {
     throw new TypeError();
   }
 
-  const secretHash = crypto.createHash('sha256').update(secret, encoding).digest();
+  const secretHash = crypto.createHash('sha256')
+    // https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
+    .update(secret)
+    .digest();
 
   return {
     encrypt: (buffer: Buffer) => {

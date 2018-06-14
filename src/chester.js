@@ -42,7 +42,7 @@ module.exports.Chester = (secret: string | Buffer, {
   const crypter = Crypter(Buffer.concat([
     typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
-  ]), { encoding, encryption, ivLength });
+  ]), { encryption, ivLength });
 
   return {
     _crypter: crypter,
