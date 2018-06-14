@@ -30,9 +30,11 @@ const Chester = require("secure-chest").Chester;
 
 const chester = Chester("SECRET-ENCRYPTION-KEY");
 
-const cookie = chester.lock(JSON.stringify({ username: "John Doe" }));
-// ---- new request
-const welcome = `Hello ${JSON.parse(chester.unlock(cookie)).username}!`;
+const chest = chester.lock(JSON.stringify({ username: "John Doe" }));
+
+// ... store chest with client ...
+
+const welcome = `Hello ${JSON.parse(chester.unlock(chest)).username}!`;
 console.log(welcome);
 // => "Hello John Doe"
 ```
