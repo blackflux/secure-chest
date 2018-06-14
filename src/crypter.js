@@ -50,6 +50,7 @@ module.exports.Crypter = (secret: Buffer, {
       let useGzip = false;
       if (gzip !== constants.GZIP_MODE.NEVER) {
         const inputGzip = zlib.gzipSync(buffer, { level: 9 /* zlib.constants.Z_BEST_COMPRESSION */ });
+        // how many cases will this actually be true (that the uncompressed buffer is actually less in size...?)
         if (gzip === constants.GZIP_MODE.FORCE || buffer.length > inputGzip.length) {
           input = inputGzip;
           useGzip = true;
