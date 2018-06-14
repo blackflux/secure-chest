@@ -32,8 +32,8 @@ const chester = Chester("SECRET-ENCRYPTION-KEY");
 
 const cookie = chester.lock(JSON.stringify({ username: "John Doe" }));
 // ---- new request
-const hello = `Hello ${JSON.parse(chester.unlock(cookie)).username}!`;
-console.log(hello);
+const welcome = `Hello ${JSON.parse(chester.unlock(cookie)).username}!`;
+console.log(welcome);
 // => "Hello John Doe"
 ```
 
