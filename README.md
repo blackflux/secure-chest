@@ -18,7 +18,7 @@ Intended for storing data with untrusted party. Useful when storing data on serv
 
 Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
-Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. 
+Encoded Data is Url Safe and satisfies the regular expression `^[A-Za-z0-9\-_]+$`. Internally Gzip is used when this shortens the tokens.
 
 ## Getting Started
 
@@ -232,6 +232,8 @@ chester.unlock(chest);
 Used to encrypt and decrypt data using `aes-256-cbc` with `16` bit random IV by default (see notes below).
 
 Deals only with Buffers and produced web-safe base64 and hence is encoding independent.
+
+Internally this uses GZip when this shortens the output.
 
 ### Functions
 
