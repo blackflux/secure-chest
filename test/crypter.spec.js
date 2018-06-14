@@ -30,6 +30,11 @@ describe("Testing Crypter", () => {
     expect(() => Crypter(crypto.randomBytes(128)).decrypt(crypto.randomBytes(0))).to.throw(TypeError);
   });
 
+  it("Testing Invalid Gzip Mode (Error)", () => {
+    // $FlowFixMe
+    expect(() => Crypter(crypto.randomBytes(128), { gzip: "invalid" })).to.throw(TypeError);
+  });
+
   it("Testing Custom Base64 Encoding", () => {
     for (let i = 1; i < 2048; i += 1) {
       const data = crypto.randomBytes(i);

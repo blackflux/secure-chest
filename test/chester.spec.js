@@ -49,6 +49,11 @@ describe("Testing Chester", () => {
     expect(() => Chester("").lockObj(1)).to.throw(TypeError);
   });
 
+  it("Testing Invalid Encoding (Error)", () => {
+    // $FlowFixMe
+    expect(() => Chester("", { encoding: "invalid" })).to.throw(TypeError);
+  });
+
   it("Testing JSON", () => {
     const data = { property: "value" };
     const chest = chester.lockObj(data);
