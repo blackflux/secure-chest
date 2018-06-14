@@ -46,11 +46,11 @@ module.exports.Chester = (secret: string | Buffer, {
 
   return {
     _crypter: crypter,
-    lock: (treasure: string, ...context: string[]) => {
+    lock: (treasure: string, ...contexts: string[]) => {
       if (typeof treasure !== 'string') {
         throw new TypeError();
       }
-      if (context.some(c => typeof c !== 'string')) {
+      if (contexts.some(c => typeof c !== 'string')) {
         throw new TypeError();
       }
 
@@ -63,17 +63,17 @@ module.exports.Chester = (secret: string | Buffer, {
         encoding,
         treasureBuffer,
         timestampBuffer,
-        ...context.map(c => Buffer.from(c, encoding))
+        ...contexts.map(c => Buffer.from(c, encoding))
       );
 
       const bytes = Buffer.concat([signatureBuffer, timestampBuffer, treasureBuffer]);
       return crypter.encrypt(bytes);
     },
-    unlock: (chest: string, ...context: string[]) => {
+    unlock: (chest: string, ...contexts: string[]) => {
       if (typeof chest !== 'string') {
         throw new TypeError();
       }
-      if (context.some(c => typeof c !== 'string')) {
+      if (contexts.some(c => typeof c !== 'string')) {
         throw new TypeError();
       }
 
@@ -92,7 +92,7 @@ module.exports.Chester = (secret: string | Buffer, {
         encoding,
         treasureBuffer,
         timestampBuffer,
-        ...context.map(c => Buffer.from(c, encoding))
+        ...contexts.map(c => Buffer.from(c, encoding))
       );
       if (Buffer.compare(signatureBufferStored, signatureBufferComputed) !== 0) {
         throw new DecryptionSignatureError();
