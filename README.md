@@ -31,7 +31,10 @@ Below is an example flow that allows users to be signed in without persisting an
 ```js
 const { Chester, DecryptionExpiredError } = require("secure-chest");
 
-const chester = Chester("SECRET-ENCRYPTION-KEY");
+const chester = Chester("SECRET-ENCRYPTION-KEY", {
+  name: "facebook-auth", 
+  maxAgeInSec: 60 * 60 // require re-auth every hour
+});
 
 // ... facebook oauth flow ...
 
@@ -51,6 +54,41 @@ try {
 } catch (e) {
   if (e instanceof DecryptionExpiredError) {
     // ... re-authenticate with facebook ...
+  }
+}
+```
+
+Or to create an unsubscribe link without storing information on the server one could use it as follows.
+
+<!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
+```js
+const { Chester, DecryptionExpiredError } = require("secure-chest");
+
+const chester = Chester("SECRET-ENCRYPTION-KEY", { 
+  name: "email-unsubscribe", 
+  maxAgeInSec: 60 * 60 * 24 * 90 // link is valid for 90 days
+});
+
+// could also include hashed password-salt if unsubscribe links should be invalidated when password changes
+const unsubscribeLink = `https://domain.com/unsubscribe?token=${chester.lockObj({ userId, userEmail })}`;
+
+// ... generate and send email to user ...
+
+// ... user clicks unsubscribe link ...
+
+const token = getQueryParam("token");
+
+try {
+  const info = chester.unlockObj(token);
+  const user = findUser(info.userId, info.userEmail);
+  if (user) {
+    unsubscribe(user);
+  } else {
+    // user does not exist or email address was changed
+  }
+} catch (e) {
+  if (e instanceof DecryptionExpiredError) {
+    // unsubscribe link has expired
   }
 }
 ```
