@@ -2,10 +2,7 @@
 const crypto = require('crypto');
 const expect = require('chai').expect;
 const constants = require("./../src/constants");
-const urlSafeBase64 = require("./../src/url-safe-base64");
-const { Crypter } = require("./../src/crypter");
 const {
-  Chester,
   EncryptionJsonError,
   DecryptionIntegrityError,
   DecryptionSignatureError,
@@ -13,7 +10,10 @@ const {
   DecryptionExpiredError,
   DecryptionGunzipError,
   DecryptionJsonError
-} = require("./../src/chester");
+} = require("./../src/errors");
+const urlSafeBase64 = require("./../src/url-safe-base64");
+const { Crypter } = require("./../src/crypter");
+const { Chester } = require("./../src/chester");
 
 describe("Testing Chester", () => {
   let secret;

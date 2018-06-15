@@ -5,10 +5,18 @@ const index = require('./../src/index');
 describe("Testing Index", () => {
   it("Testing Include", () => {
     expect(index).to.have.keys(
-      "Crypter",
+      "constants",
+      "errors",
       "toUrlSafeBase64",
       "fromUrlSafeBase64",
-      "Chester",
+      "Crypter",
+      "Chester"
+    );
+    expect(index.constants).to.have.keys(
+      "ENCODING",
+      "GZIP_MODE"
+    );
+    expect(index.errors).to.have.keys(
       "EncryptionError",
       "EncryptionJsonError",
       "DecryptionError",
@@ -17,8 +25,7 @@ describe("Testing Index", () => {
       "DecryptionSignatureError",
       "DecryptionTimeTravelError",
       "DecryptionGunzipError",
-      "DecryptionJsonError",
-      "constants"
+      "DecryptionJsonError"
     );
   });
 });

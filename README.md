@@ -29,7 +29,8 @@ Below is an example flow that allows users to be signed in without persisting an
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
 ```js
-const { Chester, DecryptionExpiredError } = require("secure-chest");
+const { Chester } = require("secure-chest");
+const { DecryptionExpiredError } = require("secure-chest").errors;
 
 const chester = Chester("SECRET-ENCRYPTION-KEY", {
   name: "facebook-auth",
@@ -62,7 +63,8 @@ Or to create an unsubscribe link without storing information on the server one c
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef, no-unused-vars -->
 ```js
-const { Chester, DecryptionExpiredError } = require("secure-chest");
+const { Chester } = require("secure-chest");
+const { DecryptionExpiredError } = require("secure-chest").errors;
 
 const chester = Chester("SECRET-ENCRYPTION-KEY", {
   name: "email-unsubscribe",
@@ -165,6 +167,8 @@ See Cryper below
 See Cryper below
 
 ### Errors
+
+Exported from top level `errors`.
 
 #### EncryptionError
 
