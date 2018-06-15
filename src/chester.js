@@ -26,6 +26,15 @@ const getZerodUnixTime = (zeroTime: number) => Math.floor(new Date() / 1000) - z
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
+type options = {
+  name?: string,
+  encoding?: $Keys<typeof constants.ENCODING>,
+  zeroTime?: number,
+  maxAgeInSec?: number,
+  gzip?: $Keys<typeof constants.GZIP_MODE>,
+  encryption?: string,
+  ivLength?: number
+};
 
 module.exports.Chester = (secret: string | Buffer, {
   name = "default",
@@ -35,15 +44,7 @@ module.exports.Chester = (secret: string | Buffer, {
   gzip = constants.GZIP_MODE.AUTO,
   encryption = 'aes-256-cbc',
   ivLength = 16
-}: {
-  name?: string,
-  encoding?: $Keys<typeof constants.ENCODING>,
-  zeroTime?: number,
-  maxAgeInSec?: number,
-  gzip?: $Keys<typeof constants.GZIP_MODE>,
-  encryption?: string,
-  ivLength?: number
-} = {}) => {
+}: options = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();
   }
@@ -119,7 +120,6 @@ module.exports.Chester = (secret: string | Buffer, {
   };
 
   return {
-    _crypter: crypter,
     lock,
     unlock,
     lockObj: (treasure: Object, ...contexts: string[]) => {

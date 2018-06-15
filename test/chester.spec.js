@@ -1,7 +1,8 @@
 // @flow
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const { toUrlSafeBase64 } = require("./../src/crypter");
+const { Crypter } = require("./../src/crypter");
+const urlSafeBase64 = require("./../src/url-safe-base64");
 const {
   Chester,
   EncryptionJsonError,
@@ -13,10 +14,12 @@ const {
 } = require("./../src/chester");
 
 describe("Testing Chester", () => {
+  let secret;
   let chester;
 
   beforeEach(() => {
-    chester = Chester(crypto.randomBytes(256));
+    secret = crypto.randomBytes(256);
+    chester = Chester(secret);
   });
 
   it("Testing Non Buffer and non String Secret (Error)", () => {
@@ -88,7 +91,6 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Name Mismatch", () => {
-    const secret = crypto.randomBytes(256);
     const chester1 = Chester(secret, { name: "chester1" });
     const chester2 = Chester(secret, { name: "chester2" });
     const data = crypto.randomBytes(4096).toString("utf8");
@@ -118,13 +120,12 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Integrity Error", () => {
-    expect(() => chester.unlock(toUrlSafeBase64(crypto.randomBytes(4096))))
+    expect(() => chester.unlock(urlSafeBase64.encode(crypto.randomBytes(4096))))
       .to.throw(DecryptionIntegrityError);
   });
 
   it("Testing Signature Error", () => {
-    // eslint-disable-next-line no-underscore-dangle
-    const crypter = chester._crypter;
+    const crypter = Crypter(Buffer.concat([secret, Buffer.from("default", "utf8")]));
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester.lock(data);
     const decrypted = crypter.decrypt(chest);
@@ -134,7 +135,6 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Time Travel Error", () => {
-    const secret = crypto.randomBytes(256);
     const chester1 = Chester(secret, { zeroTime: 0 });
     const chester2 = Chester(secret);
     const data = crypto.randomBytes(256).toString("utf8");
@@ -143,7 +143,6 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Expired Error", () => {
-    const secret = crypto.randomBytes(256);
     const chester1 = Chester(secret);
     const chester2 = Chester(secret, { zeroTime: 0 });
     const data = crypto.randomBytes(256).toString("utf8");
