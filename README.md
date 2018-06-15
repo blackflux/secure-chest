@@ -147,7 +147,14 @@ When value is changed it is automatically changed for all previously created che
 Type: `constant.GZIP_MODE`<br>
 Default: `constant.GZIP_MODE.AUTO`
 
-Overwrite gzip mode. By default gzip mode is only used when output is shortened. Useful when gzip is computationally too expensive.
+Overwrite gzip mode. By default gzip mode is only used when output is shortened.
+
+#### gzipLevel
+
+Type: `zlib.constants.*`
+Default: `zlib.constants.Z_BEST_COMPRESSION`
+
+Desired zlib compression.
 
 #### encryption
 
