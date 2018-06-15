@@ -2,19 +2,7 @@
 const crypto = require('crypto');
 const zlib = require('zlib');
 const constants = require("./constants");
-
-const toUrlSafeBase64 = (input: Buffer) => input
-  .toString('base64')
-  .replace(/\+/g, "-")
-  .replace(/\//g, "_")
-  .replace(/=*$/, m => m.length.toString());
-module.exports.toUrlSafeBase64 = toUrlSafeBase64;
-
-const fromUrlSafeBase64 = (input: string) => Buffer.from(input
-  .replace(/[012]$/, m => '='.repeat(parseInt(m, 10)))
-  .replace(/_/g, "/")
-  .replace(/-/g, "+"), 'base64');
-module.exports.fromUrlSafeBase64 = fromUrlSafeBase64;
+const urlSafeBase64 = require("./url-safe-base64");
 
 module.exports.Crypter = (secret: Buffer, {
   gzip = constants.GZIP_MODE.AUTO,
@@ -58,14 +46,14 @@ module.exports.Crypter = (secret: Buffer, {
       iv[0] = useGzip ? iv[0] | 1 : iv[0] & ~1;
       const cipher = crypto.createCipheriv(encryption, secretHash, iv);
       const rawEncrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]);
-      return toUrlSafeBase64(rawEncrypted);
+      return urlSafeBase64.encode(rawEncrypted);
     },
     decrypt: (base64: string) => {
       if (typeof base64 !== 'string') {
         throw new TypeError();
       }
 
-      const rawEncrypted = fromUrlSafeBase64(base64);
+      const rawEncrypted = urlSafeBase64.decode(base64);
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
       const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);

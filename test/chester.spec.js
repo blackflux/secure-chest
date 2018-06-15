@@ -1,7 +1,8 @@
 // @flow
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const { toUrlSafeBase64, Crypter } = require("./../src/crypter");
+const { Crypter } = require("./../src/crypter");
+const urlSafeBase64 = require("./../src/url-safe-base64");
 const {
   Chester,
   EncryptionJsonError,
@@ -119,7 +120,7 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Integrity Error", () => {
-    expect(() => chester.unlock(toUrlSafeBase64(crypto.randomBytes(4096))))
+    expect(() => chester.unlock(urlSafeBase64.encode(crypto.randomBytes(4096))))
       .to.throw(DecryptionIntegrityError);
   });
 
