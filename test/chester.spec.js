@@ -1,8 +1,9 @@
 // @flow
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const { Crypter } = require("./../src/crypter");
+const constants = require("./../src/constants");
 const urlSafeBase64 = require("./../src/url-safe-base64");
+const { Crypter } = require("./../src/crypter");
 const {
   Chester,
   EncryptionJsonError,
@@ -10,16 +11,19 @@ const {
   DecryptionSignatureError,
   DecryptionTimeTravelError,
   DecryptionExpiredError,
+  DecryptionGunzipError,
   DecryptionJsonError
 } = require("./../src/chester");
 
 describe("Testing Chester", () => {
   let secret;
   let chester;
+  let crypter;
 
   beforeEach(() => {
     secret = crypto.randomBytes(256);
     chester = Chester(secret);
+    crypter = Crypter(Buffer.concat([secret, Buffer.from("default", "utf8")]));
   });
 
   it("Testing Non Buffer and non String Secret (Error)", () => {
@@ -55,6 +59,11 @@ describe("Testing Chester", () => {
   it("Testing Invalid Encoding (Error)", () => {
     // $FlowFixMe
     expect(() => Chester("", { encoding: "invalid" })).to.throw(TypeError);
+  });
+
+  it("Testing Invalid Gzip Mode (Error)", () => {
+    // $FlowFixMe
+    expect(() => Chester("", { gzip: "invalid" })).to.throw(TypeError);
   });
 
   it("Testing JSON", () => {
@@ -125,7 +134,6 @@ describe("Testing Chester", () => {
   });
 
   it("Testing Signature Error", () => {
-    const crypter = Crypter(Buffer.concat([secret, Buffer.from("default", "utf8")]));
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester.lock(data);
     const decrypted = crypter.decrypt(chest);
@@ -160,5 +168,30 @@ describe("Testing Chester", () => {
     const obj = {};
     obj.recursive = obj;
     expect(() => chester.lockObj(obj)).to.throw(EncryptionJsonError);
+  });
+
+  it("Test Gzip Modes Force vs Never", () => {
+    const chesterGzip = Chester(secret, { gzip: constants.GZIP_MODE.FORCE });
+    const chesterPlain = Chester(secret, { gzip: constants.GZIP_MODE.NEVER });
+    const data = "0".repeat(1024);
+    const encryptedGzip = chesterGzip.lock(data);
+    const encryptedPlain = chesterPlain.lock(data);
+    expect(encryptedGzip.length).to.be.below(encryptedPlain.length);
+    // cross extract
+    const decryptedGzip = chesterPlain.unlock(encryptedGzip);
+    const decryptedPlain = chesterGzip.unlock(encryptedPlain);
+    expect(decryptedGzip).to.equal(data);
+    expect(decryptedGzip).to.equal(decryptedPlain);
+  });
+
+  it("Test Invalid Gzip Content", () => {
+    const chesterPlain = Chester(secret, { gzip: constants.GZIP_MODE.NEVER });
+    const data = "0".repeat(1024);
+    const encrypted = chesterPlain.lock(data);
+    const raw = crypter.decrypt(encrypted);
+    // eslint-disable-next-line no-bitwise
+    raw[0] |= 1;
+    const invalid = crypter.encrypt(raw);
+    expect(() => chester.unlock(invalid)).to.throw(DecryptionGunzipError);
   });
 });

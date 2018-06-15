@@ -1,28 +1,14 @@
 // @flow
 const crypto = require('crypto');
-const zlib = require('zlib');
-const constants = require("./constants");
 const urlSafeBase64 = require("./url-safe-base64");
 
-type options = {
-  gzip?: $Keys<typeof constants.GZIP_MODE>,
-  encryption?: string,
-  ivLength?: number
-};
-
-module.exports.Crypter = (secret: Buffer, {
-  gzip = constants.GZIP_MODE.AUTO,
-  encryption = 'aes-256-cbc',
-  ivLength = 16
-}: options = {}) => {
+module.exports.Crypter = (secret: Buffer, encryption: string = 'aes-256-cbc', ivLength: number = 16) => {
   if (!Buffer.isBuffer(secret)) {
     throw new TypeError();
   }
-  if (Object.keys(constants.GZIP_MODE).indexOf(gzip) === -1) {
-    throw new TypeError();
-  }
 
-  const secretHash = crypto.createHash('sha256')
+  // hashed to be compatible with createCipheriv, not for security
+  const hashedSecret = crypto.createHash('sha256')
     // https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
     .update(secret)
     .digest();
@@ -33,21 +19,9 @@ module.exports.Crypter = (secret: Buffer, {
         throw new TypeError();
       }
 
-      let input = buffer;
-      let useGzip = false;
-      if (gzip !== constants.GZIP_MODE.NEVER) {
-        const inputGzip = zlib.gzipSync(buffer, { level: 9 /* zlib.constants.Z_BEST_COMPRESSION */ });
-        if (gzip === constants.GZIP_MODE.FORCE || buffer.length > inputGzip.length) {
-          input = inputGzip;
-          useGzip = true;
-        }
-      }
-
       const iv = crypto.randomBytes(ivLength);
-      // eslint-disable-next-line no-bitwise
-      iv[0] = useGzip ? iv[0] | 1 : iv[0] & ~1;
-      const cipher = crypto.createCipheriv(encryption, secretHash, iv);
-      const rawEncrypted = Buffer.concat([iv, cipher.update(input), cipher.final()]);
+      const cipher = crypto.createCipheriv(encryption, hashedSecret, iv);
+      const rawEncrypted = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
       return urlSafeBase64.encode(rawEncrypted);
     },
     decrypt: (base64: string) => {
@@ -57,11 +31,8 @@ module.exports.Crypter = (secret: Buffer, {
 
       const rawEncrypted = urlSafeBase64.decode(base64);
       const iv = rawEncrypted.slice(0, ivLength);
-      const decipher = crypto.createDecipheriv(encryption, secretHash, iv);
-      const output = Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
-      // eslint-disable-next-line no-bitwise
-      const useGzip = rawEncrypted[0] & 1;
-      return useGzip ? zlib.gunzipSync(output) : output;
+      const decipher = crypto.createDecipheriv(encryption, hashedSecret, iv);
+      return Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);
     }
   };
 };

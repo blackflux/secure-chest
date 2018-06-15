@@ -97,6 +97,8 @@ try {
 
 Exposes main functionality.
 
+Uses GZip internally when this shortens the output.
+
 ### Parameters
 
 #### secret
@@ -142,7 +144,10 @@ When value is changed it is automatically changed for all previously created che
 
 #### gzip
 
-See Crypter below
+Type: `constant.GZIP_MODE`<br>
+Default: `constant.GZIP_MODE.AUTO`
+
+Overwrite gzip mode. By default gzip mode is only used when output is shortened. Useful when gzip is computationally too expensive.
 
 #### encryption
 
@@ -183,6 +188,10 @@ The chest is not valid yet. This usually only happens when the zeroTime is chang
 #### DecryptionExpiredError
 
 The chest has expired.
+
+#### DecryptionGunzipError
+
+The gzip content of the chest is invalid. This should never happen.
 
 #### DecryptionJsonError
 
@@ -229,11 +238,9 @@ chester.unlock(chest);
 
 ## Crypter
 
-Used to encrypt and decrypt data using `aes-256-cbc` with `16` bit random IV by default (see notes below).
+Used to encrypt and decrypt data using `aes-256-cbc` with `16` bit random IV by default.
 
 Deals only with Buffers and produced web-safe base64 and hence is encoding independent.
-
-Internally this uses GZip when this shortens the output.
 
 *Important*: Errors are not explicitly handled.
 
@@ -258,15 +265,6 @@ Takes a web-safe base64 encoded string and decrypts it into a Buffer.
 Type: `Buffer`<br>
 
 Secret used to encrypt data. Internally this gets hashed.
-
-#### gzip
-
-Type: `constant.GZIP_MODE`<br>
-Default: `constant.GZIP_MODE.AUTO`
-
-Overwrite gzip mode. By default gzip mode is only used when output is shortened. Useful when gzip is computationally too expensive.
-
-Will not change how first bit is set in IV and hence ok to change for existing tokens.
 
 #### encryption
 
@@ -327,6 +325,8 @@ This project is considered complete and won't see any major features or changes.
 
 Input values are heavily checked and `TypeError` is raised if invalid.
 
-## Security Observations
+## Signature Observations
 
-GZip is only used when this shortens the output. One bit in IV indicates this and hence only `len - 1` bits are truly random. Acceptable when `len(IV) >= 16` bytes.
+By default GZip is only used when this shortens the output. One bit in the signature indicates if gzip is used and hence only `len - 1` bits are the "true" signature.
+ 
+Acceptable since signature is `16` bytes and this doesn't increase collisions significantly.

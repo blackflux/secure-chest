@@ -12,11 +12,12 @@ describe("Testing Index", () => {
       "EncryptionError",
       "EncryptionJsonError",
       "DecryptionError",
-      "DecryptionJsonError",
       "DecryptionExpiredError",
       "DecryptionIntegrityError",
       "DecryptionSignatureError",
       "DecryptionTimeTravelError",
+      "DecryptionGunzipError",
+      "DecryptionJsonError",
       "constants"
     );
   });
