@@ -4,15 +4,17 @@ const zlib = require('zlib');
 const constants = require("./constants");
 const urlSafeBase64 = require("./url-safe-base64");
 
+type options = {
+  gzip?: $Keys<typeof constants.GZIP_MODE>,
+  encryption?: string,
+  ivLength?: number
+};
+
 module.exports.Crypter = (secret: Buffer, {
   gzip = constants.GZIP_MODE.AUTO,
   encryption = 'aes-256-cbc',
   ivLength = 16
-}: {
-  gzip?: $Keys<typeof constants.GZIP_MODE>,
-  encryption?: string,
-  ivLength?: number
-} = {}) => {
+}: options = {}) => {
   if (!Buffer.isBuffer(secret)) {
     throw new TypeError();
   }
