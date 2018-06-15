@@ -1,28 +1,9 @@
 // @flow
 const crypto = require("crypto");
 const zlib = require('zlib');
-const { Crypter } = require("./crypter");
 const constants = require("./constants");
-
-
-class EncryptionError extends Error {}
-class EncryptionJsonError extends EncryptionError {}
-class DecryptionError extends Error {}
-class DecryptionIntegrityError extends DecryptionError {}
-class DecryptionSignatureError extends DecryptionError {}
-class DecryptionTimeTravelError extends DecryptionError {}
-class DecryptionExpiredError extends DecryptionError {}
-class DecryptionGunzipError extends DecryptionError {}
-class DecryptionJsonError extends DecryptionError {}
-module.exports.EncryptionError = EncryptionError;
-module.exports.EncryptionJsonError = EncryptionJsonError;
-module.exports.DecryptionError = DecryptionError;
-module.exports.DecryptionIntegrityError = DecryptionIntegrityError;
-module.exports.DecryptionSignatureError = DecryptionSignatureError;
-module.exports.DecryptionTimeTravelError = DecryptionTimeTravelError;
-module.exports.DecryptionExpiredError = DecryptionExpiredError;
-module.exports.DecryptionGunzipError = DecryptionGunzipError;
-module.exports.DecryptionJsonError = DecryptionJsonError;
+const errors = require("./errors");
+const { Crypter } = require("./crypter");
 
 
 const getZerodUnixTime = (zeroTime: number) => Math.floor(new Date() / 1000) - zeroTime;
@@ -113,7 +94,7 @@ module.exports.Chester = (secret: string | Buffer, {
     try {
       bytes = crypter.decrypt(chest);
     } catch (e) {
-      throw new DecryptionIntegrityError(e);
+      throw new errors.DecryptionIntegrityError(e);
     }
     const signatureBufferStored = bytes.slice(0, 16);
     const timestampBuffer = bytes.slice(16, 20);
@@ -132,20 +113,20 @@ module.exports.Chester = (secret: string | Buffer, {
     signatureBufferComputed[0] = useGzip ? signatureBufferComputed[0] | 1 : signatureBufferComputed[0] & ~1;
 
     if (Buffer.compare(signatureBufferStored, signatureBufferComputed) !== 0) {
-      throw new DecryptionSignatureError();
+      throw new errors.DecryptionSignatureError();
     }
     const ageInSec = getZerodUnixTime(zeroTime) - timestamp;
     if (ageInSec < 0) {
-      throw new DecryptionTimeTravelError();
+      throw new errors.DecryptionTimeTravelError();
     }
     if (ageInSec > maxAgeInSec) {
-      throw new DecryptionExpiredError();
+      throw new errors.DecryptionExpiredError();
     }
     if (useGzip) {
       try {
         return zlib.gunzipSync(treasureBuffer).toString(encoding);
       } catch (e) {
-        throw new DecryptionGunzipError(e);
+        throw new errors.DecryptionGunzipError(e);
       }
     }
     return treasureBuffer.toString(encoding);
@@ -161,7 +142,7 @@ module.exports.Chester = (secret: string | Buffer, {
       try {
         return lock(JSON.stringify(treasure), ...contexts);
       } catch (e) {
-        throw new EncryptionJsonError(e);
+        throw new errors.EncryptionJsonError(e);
       }
     },
     unlockObj: (chest: string, ...contexts: string[]) => {
@@ -169,7 +150,7 @@ module.exports.Chester = (secret: string | Buffer, {
       try {
         return JSON.parse(str);
       } catch (e) {
-        throw new DecryptionJsonError(e);
+        throw new errors.DecryptionJsonError(e);
       }
     }
   };

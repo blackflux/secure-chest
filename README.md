@@ -166,6 +166,8 @@ See Cryper below
 
 ### Errors
 
+Exported from top level `errors`.
+
 #### EncryptionError
 
 General Encryption Error that all Encryption Errors inherit from.
