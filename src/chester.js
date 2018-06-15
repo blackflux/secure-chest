@@ -1,5 +1,6 @@
 // @flow
 const crypto = require("crypto");
+const zlib = require('zlib');
 const { Crypter } = require("./crypter");
 const constants = require("./constants");
 
@@ -11,6 +12,7 @@ class DecryptionIntegrityError extends DecryptionError {}
 class DecryptionSignatureError extends DecryptionError {}
 class DecryptionTimeTravelError extends DecryptionError {}
 class DecryptionExpiredError extends DecryptionError {}
+class DecryptionGunzipError extends DecryptionError {}
 class DecryptionJsonError extends DecryptionError {}
 module.exports.EncryptionError = EncryptionError;
 module.exports.EncryptionJsonError = EncryptionJsonError;
@@ -19,6 +21,7 @@ module.exports.DecryptionIntegrityError = DecryptionIntegrityError;
 module.exports.DecryptionSignatureError = DecryptionSignatureError;
 module.exports.DecryptionTimeTravelError = DecryptionTimeTravelError;
 module.exports.DecryptionExpiredError = DecryptionExpiredError;
+module.exports.DecryptionGunzipError = DecryptionGunzipError;
 module.exports.DecryptionJsonError = DecryptionJsonError;
 
 
@@ -32,6 +35,7 @@ type options = {
   zeroTime?: number,
   maxAgeInSec?: number,
   gzip?: $Keys<typeof constants.GZIP_MODE>,
+  gzipLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
   encryption?: string,
   ivLength?: number
 };
@@ -42,6 +46,7 @@ module.exports.Chester = (secret: string | Buffer, {
   zeroTime = 1514764800,
   maxAgeInSec = 60,
   gzip = constants.GZIP_MODE.AUTO,
+  gzipLevel = 9, // zlib.constants.Z_BEST_COMPRESSION
   encryption = 'aes-256-cbc',
   ivLength = 16
 }: options = {}) => {
@@ -51,11 +56,14 @@ module.exports.Chester = (secret: string | Buffer, {
   if (Object.keys(constants.ENCODING).indexOf(encoding) === -1) {
     throw new TypeError();
   }
+  if (Object.keys(constants.GZIP_MODE).indexOf(gzip) === -1) {
+    throw new TypeError();
+  }
 
   const crypter = Crypter(Buffer.concat([
     typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
-  ]), { encryption, ivLength });
+  ]), encryption, ivLength);
 
   const lock = (treasure: string, ...contexts: string[]) => {
     if (typeof treasure !== 'string') {
@@ -68,7 +76,17 @@ module.exports.Chester = (secret: string | Buffer, {
     const timestamp = getZerodUnixTime(zeroTime);
     const timestampBuffer = Buffer.alloc(4);
     timestampBuffer.writeUInt32BE(timestamp, 0);
-    const treasureBuffer = Buffer.from(treasure, encoding);
+    let treasureBuffer = Buffer.from(treasure, encoding);
+
+    let useGzip = false;
+    if (gzip !== constants.GZIP_MODE.NEVER) {
+      const inputGzip = zlib.gzipSync(treasureBuffer, { level: gzipLevel });
+      if (gzip === constants.GZIP_MODE.FORCE || treasureBuffer.length > inputGzip.length) {
+        treasureBuffer = inputGzip;
+        useGzip = true;
+      }
+    }
+
     const signatureBuffer = computeSignature(
       secret,
       encoding,
@@ -76,6 +94,8 @@ module.exports.Chester = (secret: string | Buffer, {
       timestampBuffer,
       ...contexts.map(c => Buffer.from(c, encoding))
     );
+    // eslint-disable-next-line no-bitwise
+    signatureBuffer[0] = useGzip ? signatureBuffer[0] | 1 : signatureBuffer[0] & ~1;
 
     const bytes = Buffer.concat([signatureBuffer, timestampBuffer, treasureBuffer]);
     return crypter.encrypt(bytes);
@@ -106,6 +126,11 @@ module.exports.Chester = (secret: string | Buffer, {
       timestampBuffer,
       ...contexts.map(c => Buffer.from(c, encoding))
     );
+    // eslint-disable-next-line no-bitwise
+    const useGzip = (signatureBufferStored[0] & 1) !== 0;
+    // eslint-disable-next-line no-bitwise
+    signatureBufferComputed[0] = useGzip ? signatureBufferComputed[0] | 1 : signatureBufferComputed[0] & ~1;
+
     if (Buffer.compare(signatureBufferStored, signatureBufferComputed) !== 0) {
       throw new DecryptionSignatureError();
     }
@@ -115,6 +140,13 @@ module.exports.Chester = (secret: string | Buffer, {
     }
     if (ageInSec > maxAgeInSec) {
       throw new DecryptionExpiredError();
+    }
+    if (useGzip) {
+      try {
+        return zlib.gunzipSync(treasureBuffer).toString(encoding);
+      } catch (e) {
+        throw new DecryptionGunzipError(e);
+      }
     }
     return treasureBuffer.toString(encoding);
   };
