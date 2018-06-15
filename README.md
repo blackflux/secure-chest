@@ -214,10 +214,6 @@ This method can throw various errors (see section).
 
 Wraps `unlock`, and `JSON.parse` is applied to return value. On failure `DecryptionJsonError` is thrown.
 
-#### _crypter
-
-Exposes the underlying Crypter. Useful for debugging.
-
 ### Example
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->

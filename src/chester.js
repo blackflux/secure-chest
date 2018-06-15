@@ -119,7 +119,6 @@ module.exports.Chester = (secret: string | Buffer, {
   };
 
   return {
-    _crypter: crypter,
     lock,
     unlock,
     lockObj: (treasure: Object, ...contexts: string[]) => {
