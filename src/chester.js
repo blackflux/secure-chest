@@ -82,7 +82,7 @@ module.exports.Chester = (secret: string | Buffer, {
     return crypter.encrypt(bytes);
   };
 
-  const unlock = (chest: string, { contexts = [] }: { contexts: string[] } = {}) => {
+  const unlock = (chest: string, { contexts = [], expire = true }: { contexts?: string[], expire?: boolean } = {}) => {
     if (typeof chest !== 'string') {
       throw new TypeError();
     }
@@ -119,7 +119,7 @@ module.exports.Chester = (secret: string | Buffer, {
     if (ageInSec < 0) {
       throw new errors.DecryptionTimeTravelError();
     }
-    if (ageInSec > maxAgeInSec) {
+    if (expire && ageInSec > maxAgeInSec) {
       throw new errors.DecryptionExpiredError();
     }
     if (useGzip) {

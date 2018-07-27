@@ -197,7 +197,7 @@ The chest is not valid yet. This usually only happens when the zeroTime is chang
 
 #### DecryptionExpiredError
 
-The chest has expired.
+The chest has expired. Not risen when expire option is set to `false`.
 
 #### DecryptionGunzipError
 
@@ -235,10 +235,16 @@ Wraps `unlock`, and `JSON.parse` is applied to return value. On failure `Decrypt
 
 #### contexts
 Type: `String[]`<br>
+Default: `[]`
 
 When unlocking chest where contexts have been provided to lock it, unlocking requires the contexts to be identical.
 Useful for IP address or User-Agent if changes should invalidate the chest.
 
+#### expire
+Type: `Boolean`<br>
+Default: `true`
+
+When set to false the `DecryptionExpiredError` is never risen.
 
 ### Example
 
