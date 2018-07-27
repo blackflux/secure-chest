@@ -38,7 +38,7 @@ describe("Testing Chester", () => {
 
   it("Testing Non String Lock Context (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").lock("", 1)).to.throw(TypeError);
+    expect(() => Chester("").lock("", { contexts: [1] })).to.throw(TypeError);
   });
 
   it("Testing Non String Unlock Input (Error)", () => {
@@ -48,7 +48,7 @@ describe("Testing Chester", () => {
 
   it("Testing Non String Unlock Context (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").unlock("", 1)).to.throw(TypeError);
+    expect(() => Chester("").unlock("", { contexts: [1] })).to.throw(TypeError);
   });
 
   it("Testing Non Object UnlockObj Input (Error)", () => {
@@ -110,8 +110,8 @@ describe("Testing Chester", () => {
   it("Testing Context", () => {
     const data = crypto.randomBytes(256).toString("utf8");
     const context = crypto.randomBytes(256).toString("utf8");
-    const chest = chester.lock(data, context);
-    const output = chester.unlock(chest, context);
+    const chest = chester.lock(data, { contexts: [context] });
+    const output = chester.unlock(chest, { contexts: [context] });
     expect(data).to.equal(output);
   });
 
@@ -120,12 +120,16 @@ describe("Testing Chester", () => {
     const context = crypto.randomBytes(256).toString("utf8");
     const context2 = crypto.randomBytes(256).toString("utf8");
     const context3 = crypto.randomBytes(256).toString("utf8");
-    const dataSingleContext = chester.lock(data, context);
-    const dataDoubleContext = chester.lock(data, context, context2);
-    expect(() => chester.unlock(dataSingleContext, context2)).to.throw(DecryptionSignatureError);
-    expect(() => chester.unlock(dataSingleContext, context, context2)).to.throw(DecryptionSignatureError);
-    expect(() => chester.unlock(dataDoubleContext, context, context3)).to.throw(DecryptionSignatureError);
-    expect(() => chester.unlock(dataDoubleContext, context, context2, context3)).to.throw(DecryptionSignatureError);
+    const dataSingleContext = chester.lock(data, { contexts: [context] });
+    const dataDoubleContext = chester.lock(data, { contexts: [context, context2] });
+    expect(() => chester.unlock(dataSingleContext, { contexts: [context2] }))
+      .to.throw(DecryptionSignatureError);
+    expect(() => chester.unlock(dataSingleContext, { contexts: [context, context2] }))
+      .to.throw(DecryptionSignatureError);
+    expect(() => chester.unlock(dataDoubleContext, { contexts: [context, context3] }))
+      .to.throw(DecryptionSignatureError);
+    expect(() => chester.unlock(dataDoubleContext, { contexts: [context, context2, context3] }))
+      .to.throw(DecryptionSignatureError);
   });
 
   it("Testing Integrity Error", () => {

@@ -46,7 +46,7 @@ module.exports.Chester = (secret: string | Buffer, {
     Buffer.from(name, encoding)
   ]), encryption, ivLength);
 
-  const lock = (treasure: string, ...contexts: string[]) => {
+  const lock = (treasure: string, { contexts = [] }: { contexts: string[] } = {}) => {
     if (typeof treasure !== 'string') {
       throw new TypeError();
     }
@@ -82,7 +82,7 @@ module.exports.Chester = (secret: string | Buffer, {
     return crypter.encrypt(bytes);
   };
 
-  const unlock = (chest: string, ...contexts: string[]) => {
+  const unlock = (chest: string, { contexts = [] }: { contexts: string[] } = {}) => {
     if (typeof chest !== 'string') {
       throw new TypeError();
     }
@@ -135,18 +135,18 @@ module.exports.Chester = (secret: string | Buffer, {
   return {
     lock,
     unlock,
-    lockObj: (treasure: Object, ...contexts: string[]) => {
+    lockObj: (treasure: Object, opts: any = {}) => {
       if (!(treasure instanceof Object)) {
         throw new TypeError();
       }
       try {
-        return lock(JSON.stringify(treasure), ...contexts);
+        return lock(JSON.stringify(treasure), opts);
       } catch (e) {
         throw new errors.EncryptionJsonError(e);
       }
     },
-    unlockObj: (chest: string, ...contexts: string[]) => {
-      const str = unlock(chest, ...contexts);
+    unlockObj: (chest: string, opts: any = {}) => {
+      const str = unlock(chest, opts);
       try {
         return JSON.parse(str);
       } catch (e) {

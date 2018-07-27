@@ -211,11 +211,9 @@ Thrown from `unlockObj` when `JSON.parse` fails.
 
 #### lock
 
-`lock(treasure, ...contexts)`
+`lock(treasure, options = {})`
 
-Create and "lock" new chest. Takes data to encrypt as first argument and contexts as additional arguments.
-
-When unlocking chest where contexts have been provided to lock it, unlocking requires the contexts to be identical.
+Create and "lock" new chest. Takes data to encrypt as first argument and optional options as second argument.
 
 #### lockObj
 
@@ -223,15 +221,24 @@ Wraps `lock`, and `JSON.stringify` is applied to first argument. On failure `Enc
 
 #### unlock
 
-`unlock(chest, ...contexts)`
+`unlock(chest, options = {})`
 
-Unlock a chest and returns data. Takes data to decrypt as first argument and contexts as additional arguments.
+Unlock a chest and returns data. Takes data to decrypt as first argument and options as optional second argument.
 
 This method can throw various errors (see section).
 
 #### unlockObj
 
 Wraps `unlock`, and `JSON.parse` is applied to return value. On failure `DecryptionJsonError` is thrown.
+
+### Options
+
+#### contexts
+Type: `String[]`<br>
+
+When unlocking chest where contexts have been provided to lock it, unlocking requires the contexts to be identical.
+Useful for IP address or User-Agent if changes should invalidate the chest.
+
 
 ### Example
 
