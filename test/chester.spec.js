@@ -159,6 +159,7 @@ describe("Testing Chester", () => {
     const chester2 = Chester(secret, { zeroTime: 0 });
     const data = crypto.randomBytes(256).toString("utf8");
     const chest = chester1.lock(data);
+    expect(() => chester2.unlock(chest, { expire: false })).to.not.throw(DecryptionExpiredError);
     expect(() => chester2.unlock(chest)).to.throw(DecryptionExpiredError);
   });
 
