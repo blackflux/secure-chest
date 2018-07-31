@@ -31,39 +31,47 @@ describe("Testing Chester", () => {
     expect(() => Chester(0)).to.throw(TypeError);
   });
 
+  it("Testing Empty String (Error)", () => {
+    expect(() => Chester("")).to.throw(TypeError);
+  });
+
+  it("Testing Empty Buffer (Error)", () => {
+    expect(() => Chester(Buffer.alloc(0))).to.throw(TypeError);
+  });
+
   it("Testing Non String Lock Input (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").lock(1)).to.throw(TypeError);
+    expect(() => Chester("secret").lock(1)).to.throw(TypeError);
   });
 
   it("Testing Non String Lock Context (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").lock("", { contexts: [1] })).to.throw(TypeError);
+    expect(() => Chester("secret").lock("", { contexts: [1] })).to.throw(TypeError);
   });
 
   it("Testing Non String Unlock Input (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").unlock(1)).to.throw(TypeError);
+    expect(() => Chester("secret").unlock(1)).to.throw(TypeError);
   });
 
   it("Testing Non String Unlock Context (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").unlock("", { contexts: [1] })).to.throw(TypeError);
+    expect(() => Chester("secret").unlock("", { contexts: [1] })).to.throw(TypeError);
   });
 
   it("Testing Non Object UnlockObj Input (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("").lockObj(1)).to.throw(TypeError);
+    expect(() => Chester("secret").lockObj(1)).to.throw(TypeError);
   });
 
   it("Testing Invalid Encoding (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("", { encoding: "invalid" })).to.throw(TypeError);
+    expect(() => Chester("secret", { encoding: "invalid" })).to.throw(TypeError);
   });
 
   it("Testing Invalid Gzip Mode (Error)", () => {
     // $FlowFixMe
-    expect(() => Chester("", { gzip: "invalid" })).to.throw(TypeError);
+    expect(() => Chester("secret", { gzip: "invalid" })).to.throw(TypeError);
   });
 
   it("Testing JSON", () => {
