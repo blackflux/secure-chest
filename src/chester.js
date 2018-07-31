@@ -34,6 +34,9 @@ module.exports.Chester = (secret: string | Buffer, {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();
   }
+  if (secret.length === 0) {
+    throw new TypeError();
+  }
   if (Object.keys(constants.ENCODING).indexOf(encoding) === -1) {
     throw new TypeError();
   }

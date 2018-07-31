@@ -2,12 +2,12 @@
 
 [![Build Status](https://img.shields.io/travis/simlu/secure-chest/master.svg)](https://travis-ci.org/simlu/secure-chest)
 [![Test Coverage](https://img.shields.io/coveralls/simlu/secure-chest/master.svg)](https://coveralls.io/github/simlu/secure-chest?branch=master)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=simlu/secure-chest)](https://dependabot.com)
 [![Dependencies](https://david-dm.org/simlu/secure-chest/status.svg)](https://david-dm.org/simlu/secure-chest)
 [![NPM](https://img.shields.io/npm/v/secure-chest.svg)](https://www.npmjs.com/package/secure-chest)
 [![Downloads](https://img.shields.io/npm/dt/secure-chest.svg)](https://www.npmjs.com/package/secure-chest)
 [![Semantic-Release](https://github.com/simlu/js-gardener/blob/master/assets/icons/semver.svg)](https://github.com/semantic-release/semantic-release)
 [![Gardener](https://github.com/simlu/js-gardener/blob/master/assets/badge.svg)](https://github.com/simlu/js-gardener)
-[![Gitter](https://github.com/simlu/js-gardener/blob/master/assets/icons/gitter.svg)](https://gitter.im/simlu/secure-chest)
 
 Web-safe Encryption and Signing of Data
 
