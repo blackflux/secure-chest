@@ -7,6 +7,7 @@ if (require.main === module) {
     author: "Lukas Siemon",
     eslint: {
       rules: { "flow-enforce": 1 }
-    }
+    },
+    ci: ["circle"]
   }).catch(() => process.exit(1));
 }
