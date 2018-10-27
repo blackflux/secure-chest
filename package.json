@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simlu/secure-chest.git"
+    "url": "git+https://github.com/blackflux/secure-chest.git"
   },
   "keywords": [
     "encryption",
@@ -25,23 +25,23 @@
   "author": "Lukas Siemon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/simlu/secure-chest/issues"
+    "url": "https://github.com/blackflux/secure-chest/issues"
   },
-  "homepage": "https://github.com/simlu/secure-chest#readme",
+  "homepage": "https://github.com/blackflux/secure-chest#readme",
   "devDependencies": {
     "babel-cli": "7.0.0-beta.3",
-    "babel-eslint": "8.2.6",
+    "babel-eslint": "10.0.1",
     "babel-plugin-transform-flow-comments": "7.0.0-beta.3",
     "babel-preset-flow": "7.0.0-beta.3",
     "babel-register": "7.0.0-beta.3",
-    "chai": "4.1.2",
+    "chai": "4.2.0",
     "coveralls": "3.0.2",
-    "js-gardener": "1.31.0",
-    "nyc": "12.0.2",
-    "semantic-release": "15.9.2"
+    "js-gardener": "1.31.8",
+    "nyc": "13.1.0",
+    "semantic-release": "15.10.5"
   },
   "nyc": {
-    "tempDirectory": "./coverage/.nyc_output",
+    "tempDir": "./coverage/.nyc_output",
     "report-dir": "./coverage",
     "check-coverage": true,
     "per-file": false,
@@ -74,7 +74,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/simlu/secure-chest/blob/master/LICENSE"
+      "url": "https://github.com/blackflux/secure-chest/blob/master/LICENSE"
     }
   ],
   "engines": {
