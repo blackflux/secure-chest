@@ -2,30 +2,30 @@
 const expect = require('chai').expect;
 const index = require('./../src/index');
 
-describe("Testing Index", () => {
-  it("Testing Include", () => {
+describe('Testing Index', () => {
+  it('Testing Include', () => {
     expect(index).to.have.keys(
-      "constants",
-      "errors",
-      "toUrlSafeBase64",
-      "fromUrlSafeBase64",
-      "Crypter",
-      "Chester"
+      'constants',
+      'errors',
+      'toUrlSafeBase64',
+      'fromUrlSafeBase64',
+      'Crypter',
+      'Chester'
     );
     expect(index.constants).to.have.keys(
-      "ENCODING",
-      "GZIP_MODE"
+      'ENCODING',
+      'GZIP_MODE'
     );
     expect(index.errors).to.have.keys(
-      "EncryptionError",
-      "EncryptionJsonError",
-      "DecryptionError",
-      "DecryptionExpiredError",
-      "DecryptionIntegrityError",
-      "DecryptionSignatureError",
-      "DecryptionTimeTravelError",
-      "DecryptionGunzipError",
-      "DecryptionJsonError"
+      'EncryptionError',
+      'EncryptionJsonError',
+      'DecryptionError',
+      'DecryptionExpiredError',
+      'DecryptionIntegrityError',
+      'DecryptionSignatureError',
+      'DecryptionTimeTravelError',
+      'DecryptionGunzipError',
+      'DecryptionJsonError'
     );
   });
 });
