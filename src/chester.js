@@ -1,9 +1,9 @@
 // @flow
-const crypto = require("crypto");
+const crypto = require('crypto');
 const zlib = require('zlib');
-const constants = require("./constants");
-const errors = require("./errors");
-const { Crypter } = require("./crypter");
+const constants = require('./constants');
+const errors = require('./errors');
+const { Crypter } = require('./crypter');
 
 
 const getZerodUnixTime = (zeroTime: number) => Math.floor(new Date() / 1000) - zeroTime;
@@ -22,7 +22,7 @@ type options = {
 };
 
 module.exports.Chester = (secret: string | Buffer, {
-  name = "default",
+  name = 'default',
   encoding = constants.ENCODING.utf8,
   zeroTime = 1514764800,
   maxAgeInSec = 60,
@@ -45,7 +45,7 @@ module.exports.Chester = (secret: string | Buffer, {
   }
 
   const crypter = Crypter(Buffer.concat([
-    typeof secret === "string" ? Buffer.from(secret, encoding) : secret,
+    typeof secret === 'string' ? Buffer.from(secret, encoding) : secret,
     Buffer.from(name, encoding)
   ]), encryption, ivLength);
 
