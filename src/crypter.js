@@ -1,6 +1,6 @@
 // @flow
 const crypto = require('crypto');
-const urlSafeBase64 = require("./url-safe-base64");
+const urlSafeBase64 = require('./url-safe-base64');
 
 module.exports.Crypter = (secret: Buffer, encryption: string = 'aes-256-cbc', ivLength: number = 16) => {
   if (!Buffer.isBuffer(secret)) {

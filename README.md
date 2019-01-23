@@ -28,11 +28,11 @@ Below is an example flow that allows users to be signed in without persisting an
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
 ```js
-const { Chester } = require("secure-chest");
-const { DecryptionExpiredError } = require("secure-chest").errors;
+const { Chester } = require('secure-chest');
+const { DecryptionExpiredError } = require('secure-chest').errors;
 
-const chester = Chester("SECRET-ENCRYPTION-KEY", {
-  name: "facebook-auth",
+const chester = Chester('SECRET-ENCRYPTION-KEY', {
+  name: 'facebook-auth',
   maxAgeInSec: 60 * 60 // require re-auth every hour
 });
 
@@ -62,11 +62,11 @@ Or to create an unsubscribe link without storing information on the server one c
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef, no-unused-vars -->
 ```js
-const { Chester } = require("secure-chest");
-const { DecryptionExpiredError } = require("secure-chest").errors;
+const { Chester } = require('secure-chest');
+const { DecryptionExpiredError } = require('secure-chest').errors;
 
-const chester = Chester("SECRET-ENCRYPTION-KEY", {
-  name: "email-unsubscribe",
+const chester = Chester('SECRET-ENCRYPTION-KEY', {
+  name: 'email-unsubscribe',
   maxAgeInSec: 60 * 60 * 24 * 90 // link is valid for 90 days
 });
 
@@ -77,7 +77,7 @@ const unsubscribeLink = `https://domain.com/unsubscribe?token=${chester.lockObj(
 
 // ... user clicks unsubscribe link ...
 
-const token = getQueryParam("token");
+const token = getQueryParam('token');
 
 try {
   const info = chester.unlockObj(token);
@@ -250,10 +250,10 @@ When set to false the `DecryptionExpiredError` is never risen.
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const Chester = require("secure-chest").Chester;
+const Chester = require('secure-chest').Chester;
 
-const chester = Chester("SECRET-ENCRYPTION-KEY");
-const data = "Some Text";
+const chester = Chester('SECRET-ENCRYPTION-KEY');
+const data = 'Some Text';
 const chest = chester.lock(data);
 chester.unlock(chest);
 // => "Some Text"
@@ -308,7 +308,7 @@ Defines length of IV. Must be compatible with encryption.
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
 const crypto = require('crypto');
-const Crypter = require("secure-chest").Crypter;
+const Crypter = require('secure-chest').Crypter;
 
 const crypter = Crypter(crypto.randomBytes(64));
 
