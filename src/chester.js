@@ -37,6 +37,12 @@ module.exports.Chester = (secret: string | Buffer, {
   if (secret.length === 0) {
     throw new TypeError();
   }
+  if (!Number.isInteger(zeroTime) || zeroTime < 0) {
+    throw new TypeError();
+  }
+  if (!Number.isInteger(maxAgeInSec) || maxAgeInSec <= 0) {
+    throw new TypeError();
+  }
   if (Object.keys(constants.ENCODING).indexOf(encoding) === -1) {
     throw new TypeError();
   }

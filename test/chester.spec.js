@@ -64,6 +64,20 @@ describe('Testing Chester', () => {
     expect(() => Chester('secret').lockObj(1)).to.throw(TypeError);
   });
 
+  it('Testing Invalid Zero Time (Error)', () => {
+    // $FlowFixMe
+    expect(() => Chester('secret', { zeroTime: null })).to.throw(TypeError);
+    // $FlowFixMe
+    expect(() => Chester('secret', { zeroTime: -1 })).to.throw(TypeError);
+  });
+
+  it('Testing Negative Max Age In Seconds (Error)', () => {
+    // $FlowFixMe
+    expect(() => Chester('secret', { maxAgeInSec: null })).to.throw(TypeError);
+    // $FlowFixMe
+    expect(() => Chester('secret', { maxAgeInSec: -1 })).to.throw(TypeError);
+  });
+
   it('Testing Invalid Encoding (Error)', () => {
     // $FlowFixMe
     expect(() => Chester('secret', { encoding: 'invalid' })).to.throw(TypeError);
