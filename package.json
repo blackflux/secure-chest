@@ -35,7 +35,7 @@
     "nyc": "13.1.0",
     "semantic-release": "15.13.3",
     "@babel/register": "7.0.0",
-    "@babel/core": "7.1.2",
+    "@babel/core": "7.2.2",
     "@babel/cli": "7.1.2",
     "@babel/plugin-transform-flow-comments": "7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0",
