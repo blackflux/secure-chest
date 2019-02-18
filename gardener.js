@@ -8,6 +8,7 @@ if (require.main === module) {
     eslint: {
       rules: { 'flow-enforce': 1 }
     },
-    ci: ['circle']
+    ci: ['circle'],
+    dependabot: true
   }).catch(() => process.exit(1));
 }
