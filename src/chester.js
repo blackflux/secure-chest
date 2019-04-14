@@ -1,4 +1,3 @@
-// @flow
 const crypto = require('crypto');
 const zlib = require('zlib');
 const constants = require('./constants');
@@ -6,22 +5,11 @@ const errors = require('./errors');
 const { Crypter } = require('./crypter');
 
 
-const getZerodUnixTime = (zeroTime: number) => Math.floor(new Date() / 1000) - zeroTime;
+const getZerodUnixTime = zeroTime => Math.floor(new Date() / 1000) - zeroTime;
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
-type options = {
-  name?: string,
-  encoding?: $Keys<typeof constants.ENCODING>,
-  zeroTime?: number,
-  maxAgeInSec?: number,
-  gzip?: $Keys<typeof constants.GZIP_MODE>,
-  gzipLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
-  encryption?: string,
-  ivLength?: number
-};
-
-module.exports.Chester = (secret: string | Buffer, {
+module.exports.Chester = (secret, {
   name = 'default',
   encoding = constants.ENCODING.utf8,
   zeroTime = 1514764800,
@@ -30,7 +18,7 @@ module.exports.Chester = (secret: string | Buffer, {
   gzipLevel = 9, // zlib.constants.Z_BEST_COMPRESSION
   encryption = 'aes-256-cbc',
   ivLength = 16
-}: options = {}) => {
+} = {}) => {
   if (!Buffer.isBuffer(secret) && typeof secret !== 'string') {
     throw new TypeError();
   }
@@ -55,7 +43,7 @@ module.exports.Chester = (secret: string | Buffer, {
     Buffer.from(name, encoding)
   ]), encryption, ivLength);
 
-  const lock = (treasure: string, { contexts = [] }: { contexts: string[] } = {}) => {
+  const lock = (treasure, { contexts = [] } = {}) => {
     if (typeof treasure !== 'string') {
       throw new TypeError();
     }
@@ -91,7 +79,7 @@ module.exports.Chester = (secret: string | Buffer, {
     return crypter.encrypt(bytes);
   };
 
-  const unlock = (chest: string, { contexts = [], expire = true }: { contexts?: string[], expire?: boolean } = {}) => {
+  const unlock = (chest, { contexts = [], expire = true } = {}) => {
     if (typeof chest !== 'string') {
       throw new TypeError();
     }
@@ -144,7 +132,7 @@ module.exports.Chester = (secret: string | Buffer, {
   return {
     lock,
     unlock,
-    lockObj: (treasure: Object, opts: any = {}) => {
+    lockObj: (treasure, opts = {}) => {
       if (!(treasure instanceof Object)) {
         throw new TypeError();
       }
@@ -154,7 +142,7 @@ module.exports.Chester = (secret: string | Buffer, {
         throw new errors.EncryptionJsonError(e);
       }
     },
-    unlockObj: (chest: string, opts: any = {}) => {
+    unlockObj: (chest, opts = {}) => {
       const str = unlock(chest, opts);
       try {
         return JSON.parse(str);
