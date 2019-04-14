@@ -1,4 +1,3 @@
-// @flow
 class EncryptionError extends Error {}
 class EncryptionJsonError extends EncryptionError {}
 class DecryptionError extends Error {}

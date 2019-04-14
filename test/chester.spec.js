@@ -1,4 +1,3 @@
-// @flow
 const crypto = require('crypto');
 const expect = require('chai').expect;
 const constants = require('./../src/constants');
@@ -27,7 +26,6 @@ describe('Testing Chester', () => {
   });
 
   it('Testing Non Buffer and non String Secret (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester(0)).to.throw(TypeError);
   });
 
@@ -40,51 +38,40 @@ describe('Testing Chester', () => {
   });
 
   it('Testing Non String Lock Input (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret').lock(1)).to.throw(TypeError);
   });
 
   it('Testing Non String Lock Context (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret').lock('', { contexts: [1] })).to.throw(TypeError);
   });
 
   it('Testing Non String Unlock Input (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret').unlock(1)).to.throw(TypeError);
   });
 
   it('Testing Non String Unlock Context (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret').unlock('', { contexts: [1] })).to.throw(TypeError);
   });
 
   it('Testing Non Object UnlockObj Input (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret').lockObj(1)).to.throw(TypeError);
   });
 
   it('Testing Invalid Zero Time (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret', { zeroTime: null })).to.throw(TypeError);
-    // $FlowFixMe
     expect(() => Chester('secret', { zeroTime: -1 })).to.throw(TypeError);
   });
 
   it('Testing Negative Max Age In Seconds (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret', { maxAgeInSec: null })).to.throw(TypeError);
-    // $FlowFixMe
     expect(() => Chester('secret', { maxAgeInSec: -1 })).to.throw(TypeError);
   });
 
   it('Testing Invalid Encoding (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret', { encoding: 'invalid' })).to.throw(TypeError);
   });
 
   it('Testing Invalid Gzip Mode (Error)', () => {
-    // $FlowFixMe
     expect(() => Chester('secret', { gzip: 'invalid' })).to.throw(TypeError);
   });
 
