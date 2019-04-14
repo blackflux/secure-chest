@@ -1,4 +1,3 @@
-// @flow
 module.exports.constants = require('./constants');
 module.exports.errors = require('./errors');
 module.exports.toUrlSafeBase64 = require('./url-safe-base64').encode;
