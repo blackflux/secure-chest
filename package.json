@@ -9,7 +9,6 @@
     "build-clean": "npm run clean && npm run build",
     "test-simple": "nyc mocha \"./test/**/*.spec.js\"",
     "test": "npm run clean && npm run gardener && npm run test-simple",
-    "coverage": "npm run build-clean && nyc --reporter=html --reporter=text mocha",
     "coveralls": "node ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info",
     "semantic-release": "npm run build-clean && npx semantic-release",
     "gardener": "node gardener"
