@@ -1,12 +1,22 @@
-class EncryptionError extends Error {}
-class EncryptionJsonError extends EncryptionError {}
-class DecryptionError extends Error {}
-class DecryptionIntegrityError extends DecryptionError {}
-class DecryptionSignatureError extends DecryptionError {}
-class DecryptionTimeTravelError extends DecryptionError {}
-class DecryptionExpiredError extends DecryptionError {}
-class DecryptionGunzipError extends DecryptionError {}
-class DecryptionJsonError extends DecryptionError {}
+class NamedError extends Error {
+  constructor(message, fileName, lineNumber) {
+    super(message, fileName, lineNumber);
+    this.message = this.message || this.constructor.name;
+  }
+
+  toJSON() {
+    return { message: this.message };
+  }
+}
+class EncryptionError extends NamedError { }
+class EncryptionJsonError extends EncryptionError { }
+class DecryptionError extends NamedError { }
+class DecryptionIntegrityError extends DecryptionError { }
+class DecryptionSignatureError extends DecryptionError { }
+class DecryptionTimeTravelError extends DecryptionError { }
+class DecryptionExpiredError extends DecryptionError { }
+class DecryptionGunzipError extends DecryptionError { }
+class DecryptionJsonError extends DecryptionError { }
 module.exports.EncryptionError = EncryptionError;
 module.exports.EncryptionJsonError = EncryptionJsonError;
 module.exports.DecryptionError = DecryptionError;
