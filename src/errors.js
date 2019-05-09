@@ -1,6 +1,16 @@
-class EncryptionError extends Error {}
+class NamedError extends Error {
+  constructor(message, ...args) {
+    super(message, ...args);
+    this.message = this.message || this.constructor.name;
+  }
+
+  toJSON() {
+    return { message: this.message };
+  }
+}
+class EncryptionError extends NamedError {}
 class EncryptionJsonError extends EncryptionError {}
-class DecryptionError extends Error {}
+class DecryptionError extends NamedError {}
 class DecryptionIntegrityError extends DecryptionError {}
 class DecryptionSignatureError extends DecryptionError {}
 class DecryptionTimeTravelError extends DecryptionError {}
