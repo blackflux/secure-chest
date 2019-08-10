@@ -5,7 +5,7 @@ const errors = require('./errors');
 const { Crypter } = require('./crypter');
 
 
-const getZerodUnixTime = zeroTime => Math.floor(new Date() / 1000) - zeroTime;
+const getZerodUnixTime = (zeroTime) => Math.floor(new Date() / 1000) - zeroTime;
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
@@ -47,7 +47,7 @@ module.exports.Chester = (secret, {
     if (typeof treasure !== 'string') {
       throw new TypeError();
     }
-    if (contexts.some(c => typeof c !== 'string')) {
+    if (contexts.some((c) => typeof c !== 'string')) {
       throw new TypeError();
     }
 
@@ -70,7 +70,7 @@ module.exports.Chester = (secret, {
       encoding,
       treasureBuffer,
       timestampBuffer,
-      ...contexts.map(c => Buffer.from(c, encoding))
+      ...contexts.map((c) => Buffer.from(c, encoding))
     );
     // eslint-disable-next-line no-bitwise
     signatureBuffer[0] = useGzip ? signatureBuffer[0] | 1 : signatureBuffer[0] & ~1;
@@ -83,7 +83,7 @@ module.exports.Chester = (secret, {
     if (typeof chest !== 'string') {
       throw new TypeError();
     }
-    if (contexts.some(c => typeof c !== 'string')) {
+    if (contexts.some((c) => typeof c !== 'string')) {
       throw new TypeError();
     }
 
@@ -102,7 +102,7 @@ module.exports.Chester = (secret, {
       encoding,
       treasureBuffer,
       timestampBuffer,
-      ...contexts.map(c => Buffer.from(c, encoding))
+      ...contexts.map((c) => Buffer.from(c, encoding))
     );
     // eslint-disable-next-line no-bitwise
     const useGzip = (signatureBufferStored[0] & 1) !== 0;

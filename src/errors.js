@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 class NamedError extends Error {
   constructor(message, ...args) {
     super(message, ...args);
