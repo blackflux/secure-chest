@@ -107,7 +107,7 @@ describe('Testing Crypter', () => {
           ':bad decrypt',
           'incorrect header check',
           'unknown compression method'
-        ].some(needle => e.message.indexOf(needle) !== -1)).to.equal(true);
+        ].some((needle) => e.message.indexOf(needle) !== -1)).to.equal(true);
       }
     }
   });
