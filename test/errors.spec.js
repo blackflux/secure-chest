@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const errors = require('./../src/errors');
+const errors = require('../src/errors');
 
 const errorNames = Object.keys(errors);
 
