@@ -123,12 +123,11 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
-"@babel/register@7.5.5":
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.5.5.tgz#40fe0d474c8c8587b28d6ae18a03eddad3dac3c1"
-  integrity sha512-pdd5nNR+g2qDkXZlW1yRCWFlNrAn2PPdnZUB72zjX4l1Vv4fMRRLwyf+n/idFCLI1UgVGboUU8oVziwTBiyNKQ==
+"@babel/register@7.6.0":
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.6.0.tgz#76b6f466714680f4becafd45beeb2a7b87431abf"
+  integrity sha512-78BomdN8el+x/nkup9KwtjJXuptW5oXMFmP11WoM2VJBjxrKv4grC3qjpLL8RGGUYUGsm57xnjYFM2uom+jWUQ==
   dependencies:
-    core-js "^3.0.0"
     find-cache-dir "^2.0.0"
     lodash "^4.17.13"
     mkdirp "^0.5.1"
@@ -175,10 +174,10 @@
   dependencies:
     smart-fs "1.9.11"
 
-"@blackflux/robo-config-plugin@2.6.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-2.6.2.tgz#7046e06a62c009aabcc0239493394cd25a5bfeb2"
-  integrity sha512-m0dEUiBxQWtn0XS8Pxz9cnNfj5Rf5vHmnNRm52n59ki3pDCfFwo1UmF6UxTRoExtNIbt6FrYrVlHWfgNGYbMhw==
+"@blackflux/robo-config-plugin@2.6.3":
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/@blackflux/robo-config-plugin/-/robo-config-plugin-2.6.3.tgz#11dcbcfc4309a7cd7d9c3ab85f646eee9d813fd7"
+  integrity sha512-DTja80z1islgbhooDjbvfeA/YhPOZMQwpTz4G1pWR7j0K5ItmQmI5RKqs6h/V5uI/d88kY54ufX9riRRXJSMdw==
 
 "@hapi/address@2.x.x":
   version "2.0.0"
@@ -1480,11 +1479,6 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha512-HOpZf6eXmnl7la+cUdMnLvUxKNqLUzJvgIziQ0DiF3JwSImNphIqdGqzj6hIKyX04MmV0poclQ7+wjWvxQyR2A==
 
-core-js@^3.0.0:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.2.1.tgz#cd41f38534da6cc59f7db050fe67307de9868b09"
-  integrity sha512-Qa5XSVefSVPRxy2XfUC13WbvqkxhkwB3ve+pgCQveNgYzbM/UxZeu1dcOX/xr4UmfUd+muuvsaxilQzCyUurMw==
-
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -2016,10 +2010,10 @@ eslint-plugin-markdown@1.0.0:
     remark-parse "^5.0.0"
     unified "^6.1.2"
 
-eslint-plugin-mocha@6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-mocha/-/eslint-plugin-mocha-6.1.0.tgz#4950ceea8e51b1f4265116c0d03d0cbae86d0a6f"
-  integrity sha512-EQj355rhaSGOLP6WH9P9xu+0Xuy+G5dZUuRTlLPNpICw5x0zrqK+uxQZvMVKWO9zOJA4PDVR1XHO0rm9wbOLuA==
+eslint-plugin-mocha@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-mocha/-/eslint-plugin-mocha-6.1.1.tgz#5a036f2f806e1a5fb7d19f7538ebeff3afb15377"
+  integrity sha512-p/otruG425jRYDa28HjbBYYXoFNzq3Qp++gn5dbE44Kz4NvmIsSUKSV1T+RLYUcZOcdJKKAftXbaqkHFqReKoA==
   dependencies:
     ramda "^0.26.1"
 
