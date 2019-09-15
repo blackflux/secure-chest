@@ -1,7 +1,15 @@
 const crypto = require('crypto');
 const zlib = require('zlib');
 const constants = require('./constants');
-const errors = require('./errors');
+const {
+  DecryptionIntegrityError,
+  DecryptionSignatureError,
+  DecryptionTimeTravelError,
+  DecryptionExpiredError,
+  DecryptionGunzipError,
+  EncryptionJsonError,
+  DecryptionJsonError
+} = require('./errors');
 const { Crypter } = require('./crypter');
 
 
@@ -91,7 +99,7 @@ module.exports.Chester = (secret, {
     try {
       bytes = crypter.decrypt(chest);
     } catch (e) {
-      throw new errors.DecryptionIntegrityError(e);
+      throw new DecryptionIntegrityError(e);
     }
     const signatureBufferStored = bytes.slice(0, 16);
     const timestampBuffer = bytes.slice(16, 20);
@@ -110,20 +118,20 @@ module.exports.Chester = (secret, {
     signatureBufferComputed[0] = useGzip ? signatureBufferComputed[0] | 1 : signatureBufferComputed[0] & ~1;
 
     if (Buffer.compare(signatureBufferStored, signatureBufferComputed) !== 0) {
-      throw new errors.DecryptionSignatureError();
+      throw new DecryptionSignatureError();
     }
     const ageInSec = getZerodUnixTime(zeroTime) - timestamp;
     if (ageInSec < 0) {
-      throw new errors.DecryptionTimeTravelError();
+      throw new DecryptionTimeTravelError();
     }
     if (expire && ageInSec > maxAgeInSec) {
-      throw new errors.DecryptionExpiredError();
+      throw new DecryptionExpiredError();
     }
     if (useGzip) {
       try {
         return zlib.gunzipSync(treasureBuffer).toString(encoding);
       } catch (e) {
-        throw new errors.DecryptionGunzipError(e);
+        throw new DecryptionGunzipError(e);
       }
     }
     return treasureBuffer.toString(encoding);
@@ -139,7 +147,7 @@ module.exports.Chester = (secret, {
       try {
         return lock(JSON.stringify(treasure), opts);
       } catch (e) {
-        throw new errors.EncryptionJsonError(e);
+        throw new EncryptionJsonError(e);
       }
     },
     unlockObj: (chest, opts = {}) => {
@@ -147,7 +155,7 @@ module.exports.Chester = (secret, {
       try {
         return JSON.parse(str);
       } catch (e) {
-        throw new errors.DecryptionJsonError(e);
+        throw new DecryptionJsonError(e);
       }
     }
   };
