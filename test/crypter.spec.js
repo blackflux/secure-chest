@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const expect = require('chai').expect;
-const urlSafeBase64 = require('./../src/url-safe-base64');
-const { Crypter } = require('./../src/crypter');
+const urlSafeBase64 = require('../src/url-safe-base64');
+const { Crypter } = require('../src/crypter');
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
