@@ -1,13 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
 class NamedError extends Error {
-  constructor(message, ...args) {
-    super(message, ...args);
-    this.message = this.message || this.constructor.name;
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
   }
 
-  toJSON() {
-    return { message: this.message };
+  toString() {
+    return `${this.name}: ${this.message}`;
   }
 }
 class EncryptionError extends NamedError {}

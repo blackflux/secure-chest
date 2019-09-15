@@ -4,15 +4,15 @@ const errors = require('./../src/errors');
 const errorNames = Object.keys(errors);
 
 describe('Testing Chester Errors', () => {
-  const validateError = (error, expectedMessage) => {
-    expect(error).to.have.property('message').and.equal(expectedMessage);
-    expect(JSON.stringify(error)).to.equal(`{"message":"${expectedMessage}"}`);
+  const validateError = (error, message) => {
+    expect(error).to.have.property('message').and.equal(message);
+    expect(String(error)).to.equal(`${error.name}: ${message}`);
   };
 
   it('Default Constructor', () => {
     errorNames.forEach((errorName) => {
       const error = new errors[errorName]();
-      validateError(error, errorName);
+      validateError(error, '');
     });
   });
 
