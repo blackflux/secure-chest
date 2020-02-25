@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const expect = require('chai').expect;
+const { describe } = require('node-tdd');
 const urlSafeBase64 = require('../src/url-safe-base64');
 const { Crypter } = require('../src/crypter');
 

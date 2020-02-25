@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const expect = require('chai').expect;
+const { describe } = require('node-tdd');
 const constants = require('../src/constants');
 const {
   EncryptionJsonError,
@@ -100,20 +101,29 @@ describe('Testing Chester', () => {
     expect(data).to.equal(output);
   });
 
-  it('Testing Secret Mismatch', () => {
-    const chester1 = Chester(crypto.randomBytes(256));
-    const chester2 = Chester(crypto.randomBytes(256));
-    const data = crypto.randomBytes(4096).toString('utf8');
-    const chest = chester1.lock(data);
-    expect(() => chester2.unlock(chest)).to.throw(DecryptionIntegrityError);
-  });
+  describe('Testing "DecryptionIntegrityError"', {
+    cryptoSeed: '9d01b414-a1d4-4661-8312-55cf9bf5ab8b'
+  }, () => {
+    it('Testing Secret Mismatch', () => {
+      const chester1 = Chester(crypto.randomBytes(256));
+      const chester2 = Chester(crypto.randomBytes(256));
+      const data = crypto.randomBytes(4096).toString('utf8');
+      const chest = chester1.lock(data);
+      expect(() => chester2.unlock(chest)).to.throw(DecryptionIntegrityError);
+    });
 
-  it('Testing Name Mismatch', () => {
-    const chester1 = Chester(secret, { name: 'chester1' });
-    const chester2 = Chester(secret, { name: 'chester2' });
-    const data = crypto.randomBytes(4096).toString('utf8');
-    const chest = chester1.lock(data);
-    expect(() => chester2.unlock(chest)).to.throw(DecryptionIntegrityError);
+    it('Testing Name Mismatch', () => {
+      const chester1 = Chester(secret, { name: 'chester1' });
+      const chester2 = Chester(secret, { name: 'chester2' });
+      const data = crypto.randomBytes(4096).toString('utf8');
+      const chest = chester1.lock(data);
+      expect(() => chester2.unlock(chest)).to.throw(DecryptionIntegrityError);
+    });
+
+    it('Testing Integrity Error', () => {
+      expect(() => chester.unlock(urlSafeBase64.encode(crypto.randomBytes(4096))))
+        .to.throw(DecryptionIntegrityError);
+    });
   });
 
   it('Testing Context', () => {
@@ -139,11 +149,6 @@ describe('Testing Chester', () => {
       .to.throw(DecryptionSignatureError);
     expect(() => chester.unlock(dataDoubleContext, { contexts: [context, context2, context3] }))
       .to.throw(DecryptionSignatureError);
-  });
-
-  it('Testing Integrity Error', () => {
-    expect(() => chester.unlock(urlSafeBase64.encode(crypto.randomBytes(4096))))
-      .to.throw(DecryptionIntegrityError);
   });
 
   it('Testing Signature Error', () => {
