@@ -102,7 +102,8 @@ describe('Testing Chester', () => {
   });
 
   describe('Testing "DecryptionIntegrityError"', {
-    cryptoSeed: '9d01b414-a1d4-4661-8312-55cf9bf5ab8b'
+    cryptoSeed: '9d01b414-a1d4-4661-8312-55cf9bf5ab8b',
+    timestamp: 1583442033
   }, () => {
     it('Testing Secret Mismatch', () => {
       const chester1 = Chester(crypto.randomBytes(256));
