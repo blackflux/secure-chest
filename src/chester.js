@@ -12,7 +12,6 @@ const {
 } = require('./errors');
 const { Crypter } = require('./crypter');
 
-
 const getZerodUnixTime = (zeroTime) => Math.floor(new Date() / 1000) - zeroTime;
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
