@@ -4954,10 +4954,10 @@ node-sass-tilde-importer@^1.0.2:
   dependencies:
     find-parent-dir "^0.3.0"
 
-node-tdd@2.18.4:
-  version "2.18.4"
-  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-2.18.4.tgz#0a4dae16f3072646e23105d7b41664c29c9597d6"
-  integrity sha512-d4vvfv9+Ch8Ty3/b3tVVoA9sTjDTt+hiXWqy4b/8/H8KCYsUz285QocZe6S1LVzK0izXxrpiCv2Mm3+hdbaErQ==
+node-tdd@2.18.5:
+  version "2.18.5"
+  resolved "https://registry.yarnpkg.com/node-tdd/-/node-tdd-2.18.5.tgz#9d7355491506a44193f895f3c5e8f37be9c28a12"
+  integrity sha512-E4ijjjexD1a5o56L8udfXKdABzRFLmQlNWhMwhTAxHsYfF07dbb99YyPMVgCcmARVUdQSFJwUHlOtDt5nrEeBw==
   dependencies:
     callsites "3.1.0"
     joi-strict "1.2.3"
@@ -4965,8 +4965,8 @@ node-tdd@2.18.4:
     lodash.get "4.4.2"
     minimist "1.2.5"
     nock "13.0.4"
-    object-scan "13.1.4"
-    smart-fs "1.11.16"
+    object-scan "13.1.5"
+    smart-fs "1.11.17"
     timekeeper "2.2.0"
     tmp "0.2.1"
     uuid "8.3.0"
@@ -5378,6 +5378,11 @@ object-scan@13.1.4:
   version "13.1.4"
   resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-13.1.4.tgz#dab76506cef35300ab744cfce5ecf27ad0734de0"
   integrity sha512-pwc5F73RyduRMz/C+JvEllvV5nPhYj86vpdIykUnsEY6PI5gpRWuilSP3K0qhAxOyTryW6ZW2pHhweb+6ojThA==
+
+object-scan@13.1.5:
+  version "13.1.5"
+  resolved "https://registry.yarnpkg.com/object-scan/-/object-scan-13.1.5.tgz#d4f3a3b0cb89e7a3d6f6a89dd046e70585318105"
+  integrity sha512-661amgbFgthyFhAqKHcot+0akjiCHj89/mnX3wWN9nvoGxgNr+jXVtsovVAz1C++fSUg7GPsUSa93U/7H+QNVA==
 
 object-treeify@1.1.26:
   version "1.1.26"
