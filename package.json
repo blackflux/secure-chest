@@ -53,7 +53,7 @@
     "js-gardener": "3.0.3",
     "node-tdd": "3.0.4",
     "nyc": "15.1.0",
-    "semantic-release": "17.4.7"
+    "semantic-release": "19.0.3"
   },
   "nyc": {
     "tempDir": "./coverage/.nyc_output",
