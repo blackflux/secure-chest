@@ -1,8 +1,8 @@
-const crypto = require('crypto');
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const constants = require('../src/constants');
-const {
+import crypto from 'crypto';
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import * as constants from '../src/constants.js';
+import {
   EncryptionJsonError,
   DecryptionIntegrityError,
   DecryptionSignatureError,
@@ -10,10 +10,9 @@ const {
   DecryptionExpiredError,
   DecryptionGunzipError,
   DecryptionJsonError
-} = require('../src/errors');
-const urlSafeBase64 = require('../src/url-safe-base64');
-const { Crypter } = require('../src/crypter');
-const { Chester } = require('../src/chester');
+} from '../src/errors.js';
+import * as urlSafeBase64 from '../src/url-safe-base64.js';
+import { Crypter, Chester } from '../src/index.js';
 
 describe('Testing Chester', () => {
   let secret;

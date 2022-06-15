@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const urlSafeBase64 = require('./url-safe-base64');
+import crypto from 'crypto';
+import { encode, decode } from './url-safe-base64.js';
 
-module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
+export const Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => {
   if (!Buffer.isBuffer(secret)) {
     throw new TypeError();
   }
@@ -21,14 +21,14 @@ module.exports.Crypter = (secret, encryption = 'aes-256-cbc', ivLength = 16) => 
       const iv = crypto.randomBytes(ivLength);
       const cipher = crypto.createCipheriv(encryption, hashedSecret, iv);
       const rawEncrypted = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
-      return urlSafeBase64.encode(rawEncrypted);
+      return encode(rawEncrypted);
     },
     decrypt: (base64) => {
       if (typeof base64 !== 'string') {
         throw new TypeError();
       }
 
-      const rawEncrypted = urlSafeBase64.decode(base64);
+      const rawEncrypted = decode(base64);
       const iv = rawEncrypted.slice(0, ivLength);
       const decipher = crypto.createDecipheriv(encryption, hashedSecret, iv);
       return Buffer.concat([decipher.update(rawEncrypted.slice(ivLength)), decipher.final()]);

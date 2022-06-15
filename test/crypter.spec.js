@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const urlSafeBase64 = require('../src/url-safe-base64');
-const { Crypter } = require('../src/crypter');
+import fs from 'smart-fs';
+import path from 'path';
+import crypto from 'crypto';
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import * as urlSafeBase64 from '../src/url-safe-base64.js';
+import { Crypter } from '../src/index.js';
 
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i -= 1) {
@@ -52,7 +52,7 @@ describe('Testing Crypter', () => {
   });
 
   it('Testing Random Text', () => {
-    const text = fs.readFileSync(path.join(__dirname, 'data.txt'), 'utf8');
+    const text = fs.readFileSync(path.join(fs.dirname(import.meta.url), 'data.txt'), 'utf8');
     const words = text.split(' ');
     for (let i = 1; i < 1024; i += 1) {
       const crypter = Crypter(crypto.randomBytes(256));

@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const errors = require('../src/errors');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import * as errors from '../src/errors.js';
 
 const errorNames = Object.keys(errors);
 
