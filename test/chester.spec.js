@@ -11,7 +11,7 @@ import {
   DecryptionGunzipError,
   DecryptionJsonError
 } from '../src/errors.js';
-import * as urlSafeBase64 from '../src/url-safe-base64.js';
+import * as base64 from '../src/base64.js';
 import { Crypter, Chester } from '../src/index.js';
 
 describe('Testing Chester', () => {
@@ -121,7 +121,7 @@ describe('Testing Chester', () => {
     });
 
     it('Testing Integrity Error', () => {
-      expect(() => chester.unlock(urlSafeBase64.encode(crypto.randomBytes(4096))))
+      expect(() => chester.unlock(base64.toUrlSafeBase64(crypto.randomBytes(4096))))
         .to.throw(DecryptionIntegrityError);
     });
   });

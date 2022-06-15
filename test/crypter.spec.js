@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
-import * as urlSafeBase64 from '../src/url-safe-base64.js';
+import * as base64 from '../src/base64.js';
 import { Crypter } from '../src/index.js';
 
 const shuffle = (a) => {
@@ -31,10 +31,10 @@ describe('Testing Crypter', () => {
   it('Testing Custom Base64 Encoding', () => {
     for (let i = 1; i < 2048; i += 1) {
       const data = crypto.randomBytes(i);
-      const encoded = urlSafeBase64.encode(data);
+      const encoded = base64.toUrlSafeBase64(data);
       expect(['0', '1', '2']).to.contain(encoded[encoded.length - 1]);
       expect(/^[A-Za-z0-9\-_]+$/g.test(encoded)).to.equal(true);
-      const decoded = urlSafeBase64.decode(encoded);
+      const decoded = base64.fromUrlSafeBase64(encoded);
       expect(Buffer.compare(data, decoded)).to.equal(0);
     }
   });
@@ -97,9 +97,9 @@ describe('Testing Crypter', () => {
       const data = crypto.randomBytes(i);
       const encrypted = crypter.encrypt(data);
       const newIV = crypto.randomBytes(128);
-      const buffer = urlSafeBase64.decode(encrypted);
+      const buffer = base64.fromUrlSafeBase64(encrypted);
       newIV.copy(buffer);
-      const modifiedEncrypted = urlSafeBase64.encode(buffer);
+      const modifiedEncrypted = base64.toUrlSafeBase64(buffer);
       try {
         const output = crypter.decrypt(modifiedEncrypted);
         expect(Buffer.compare(data, output)).to.not.equal(0);
