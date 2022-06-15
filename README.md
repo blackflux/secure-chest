@@ -13,7 +13,7 @@ Web-safe Encryption and Signing of Data
 
 ## Use Case
 
-Intended for storing data with untrusted party. Useful when storing data on server is expensive, forbidden, inconvenient or impossible. 
+Intended for storing data with untrusted party. Useful when storing data on server is expensive, forbidden, inconvenient or impossible.
 
 Data is first signed and then, together with a timestamp, encrypted into a "chest" using a secret. Data can be extracted again and checked for consistency and freshness using the same secret.
 
@@ -28,8 +28,9 @@ Below is an example flow that allows users to be signed in without persisting an
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef -->
 ```js
-const { Chester } = require('secure-chest');
-const { DecryptionExpiredError } = require('secure-chest').errors;
+import { Chester, errors } from 'secure-chest';
+
+const { DecryptionExpiredError } = errors;
 
 const chester = Chester('SECRET-ENCRYPTION-KEY', {
   name: 'facebook-auth',
@@ -62,8 +63,9 @@ Or to create an unsubscribe link without storing information on the server one c
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies, no-undef, no-unused-vars -->
 ```js
-const { Chester } = require('secure-chest');
-const { DecryptionExpiredError } = require('secure-chest').errors;
+import { Chester } from 'secure-chest';
+
+const { DecryptionExpiredError } = errors;
 
 const chester = Chester('SECRET-ENCRYPTION-KEY', {
   name: 'email-unsubscribe',
@@ -139,7 +141,7 @@ Necessary since timestamp is stored as 4 bytes.
 Type: `number`<br>
 Default: `60`
 
-Maximum age in seconds before chest expires and `DecryptionExpiredError` is thrown when trying to unlock it. 
+Maximum age in seconds before chest expires and `DecryptionExpiredError` is thrown when trying to unlock it.
 
 When value is changed it is automatically changed for all previously created chests, since chests only store a timestamp.
 
@@ -175,7 +177,7 @@ General Encryption Error that all Encryption Errors inherit from.
 
 #### EncryptionJsonError
 
-Thrown from `lockObj` when `JSON.stringify` fails. 
+Thrown from `lockObj` when `JSON.stringify` fails.
 
 #### DecryptionError
 
@@ -205,7 +207,7 @@ The gzip content of the chest is invalid. This should never happen.
 
 #### DecryptionJsonError
 
-Thrown from `unlockObj` when `JSON.parse` fails. 
+Thrown from `unlockObj` when `JSON.parse` fails.
 
 ### Functions
 
@@ -250,7 +252,7 @@ When set to false the `DecryptionExpiredError` is never risen.
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const Chester = require('secure-chest').Chester;
+import { Chester } from 'secure-chest';
 
 const chester = Chester('SECRET-ENCRYPTION-KEY');
 const data = 'Some Text';
@@ -307,8 +309,8 @@ Defines length of IV. Must be compatible with encryption.
 
 <!-- eslint-disable import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const crypto = require('crypto');
-const Crypter = require('secure-chest').Crypter;
+import crypto from 'crypto';
+import { Crypter } from 'secure-chest';
 
 const crypter = Crypter(crypto.randomBytes(64));
 
@@ -339,8 +341,8 @@ Defines encoding for string to buffer conversions.
 The functions `toUrlSafeBase64` and `fromUrlSafeBase64` are exposed.
 
 `toUrlSafeBase64(Buffer)`
- 
-`fromUrlSafeBase64(Base64)` 
+
+`fromUrlSafeBase64(Base64)`
 
 ## Implementation Notes
 
@@ -351,5 +353,5 @@ Input values are heavily checked and `TypeError` is raised if invalid.
 ## Signature Observations
 
 By default GZip is only used when this shortens the output. One bit in the signature indicates if gzip is used and hence only `len - 1` bits are the "true" signature.
- 
+
 Acceptable since signature is `16` bytes and this doesn't increase collisions significantly.

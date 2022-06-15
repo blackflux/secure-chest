@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const zlib = require('zlib');
-const constants = require('./constants');
-const {
+import crypto from 'crypto';
+import zlib from 'zlib';
+import { ENCODING, GZIP_MODE } from './constants.js';
+import {
   DecryptionIntegrityError,
   DecryptionSignatureError,
   DecryptionTimeTravelError,
@@ -9,19 +9,19 @@ const {
   DecryptionGunzipError,
   EncryptionJsonError,
   DecryptionJsonError
-} = require('./errors');
-const { Crypter } = require('./crypter');
+} from './errors.js';
+import { Crypter } from './crypter.js';
 
 const getZerodUnixTime = (zeroTime) => Math.floor(new Date() / 1000) - zeroTime;
 const computeSignature = (secret, encoding, ...input) => input
   .reduce((p, c) => p.update(c, encoding), crypto.createHmac('md5', secret)).digest();
 
-module.exports.Chester = (secret, {
+export const Chester = (secret, {
   name = 'default',
-  encoding = constants.ENCODING.utf8,
+  encoding = ENCODING.utf8,
   zeroTime = 1514764800,
   maxAgeInSec = 60,
-  gzip = constants.GZIP_MODE.AUTO,
+  gzip = GZIP_MODE.AUTO,
   gzipLevel = 9, // zlib.constants.Z_BEST_COMPRESSION
   encryption = 'aes-256-cbc',
   ivLength = 16
@@ -38,10 +38,10 @@ module.exports.Chester = (secret, {
   if (!Number.isInteger(maxAgeInSec) || maxAgeInSec <= 0) {
     throw new TypeError();
   }
-  if (Object.keys(constants.ENCODING).indexOf(encoding) === -1) {
+  if (Object.keys(ENCODING).indexOf(encoding) === -1) {
     throw new TypeError();
   }
-  if (Object.keys(constants.GZIP_MODE).indexOf(gzip) === -1) {
+  if (Object.keys(GZIP_MODE).indexOf(gzip) === -1) {
     throw new TypeError();
   }
 
@@ -64,9 +64,9 @@ module.exports.Chester = (secret, {
     let treasureBuffer = Buffer.from(treasure, encoding);
 
     let useGzip = false;
-    if (gzip !== constants.GZIP_MODE.NEVER) {
+    if (gzip !== GZIP_MODE.NEVER) {
       const inputGzip = zlib.gzipSync(treasureBuffer, { level: gzipLevel });
-      if (gzip === constants.GZIP_MODE.FORCE || treasureBuffer.length > inputGzip.length) {
+      if (gzip === GZIP_MODE.FORCE || treasureBuffer.length > inputGzip.length) {
         treasureBuffer = inputGzip;
         useGzip = true;
       }
