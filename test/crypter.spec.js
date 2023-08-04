@@ -1,6 +1,6 @@
-import fs from 'smart-fs';
 import path from 'path';
 import crypto from 'crypto';
+import fs from 'smart-fs';
 import { expect } from 'chai';
 import { describe } from 'node-tdd';
 import * as base64 from '../src/base64.js';
